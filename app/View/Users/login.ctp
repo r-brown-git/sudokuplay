@@ -3,6 +3,7 @@
         'format' => array('input', 'error'),
     ),
 ))?>
+<a href="<?=$this->Html->url($vk_auth_link)?>"><img src="/auth_logo/vk.png" /></a>
 <table class="login-table">
     <tr>
         <td class="w60"><label>Логин</label></td>

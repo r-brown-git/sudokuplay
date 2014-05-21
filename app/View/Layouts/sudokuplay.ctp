@@ -11,9 +11,9 @@
 <script src="/js/jquery-1.10.1.min.js"></script>
 </head>
 <body>
-<div style="position:absolute;left:50px;">
+<!--<div style="position:absolute;left:50px;">
     <img src="/site/beta_test.png" />
-</div>
+</div>-->
 <div id="custom-header"></div>
 <div id="header">
 
