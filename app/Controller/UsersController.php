@@ -1,7 +1,6 @@
 <?php
 App::uses('User', 'Model');
 App::uses('Group', 'Model');
-App::uses('VkAuth', 'Component');
 App::uses('String', 'Utility');
 
 class UsersController extends AppController {
@@ -9,10 +8,17 @@ class UsersController extends AppController {
         'User',
         'FormUserLogin',
         'FormUserRegister',
+        'UsersExternal',
     ];
 
     public $components = [
         'VkAuth',
+        'GoogleAuth',
+    ];
+
+    private $_authServices = [
+        'vk',
+        'google',
     ];
 
     public function index() {
@@ -23,37 +29,98 @@ class UsersController extends AppController {
         $this->set('users', $users);
     }
 
+    /**
+     * Аутентификация через OAuth
+     * Если можно аутентифицироваться через этот сервис,
+     * мы устанавливаем в сессию через какой сервис он хочет зайти
+     * и редиректим на урл сервиса
+     * @param string $service
+     */
+    public function externalAuth($service = '') {
+        if (in_array($service, $this->_authServices)) {
+            $this->Session->write('Auth', $service);
+            $link = $this->{ucfirst($service) . 'Auth'}->getLink(); // получаем URL для сервиса
+        } else {
+            $link = ['controller' => 'users', 'action' => 'login'];
+        }
+        $this->redirect($link);
+    }
+
     public function login() {
         $this->pageTitle = 'Авторизация';
-        if (!empty($this->request->query['code'])) {
-            $userInfo = $this->VkAuth->getUserInfo($this->request->query['code']);
-            $this->User->save([
-                'id' => 0,
-                'login' => $userInfo['nickname'] ? $userInfo['nickname'] : 'player' . $userInfo['uid'],
-                'password' => substr(String::uuid(), 0, 8),
-                'group_id' => Group::REGISTERED,
-                'points' => User::START_POINTS,
-                'date_registered' => $this->User->getDataSource()->expression('NOW()'),
-            ]);
-            $this->Session->write('User', $user['User']);
-            $userId = $this->User->getLastInsertId();
-            $this->Session->write('User', $this->User->findById($userId)['User']);
-            $this->redirect('/games');
-        }
-        else if (!empty($this->request->data['FormUserLogin'])) {
+
+        $authorized = false;
+        if ($userId = $this->_checkExternalAuth()) {
+            if ($userId && $user = $this->User->findById($userId)) {
+                $authorized = true;
+            }
+        } else if (!empty($this->request->data['FormUserLogin'])) {
             $this->FormUserLogin->set($this->request->data['FormUserLogin']);
             if ($this->FormUserLogin->validates()) {
                 $user = $this->User->findByLogin($this->request->data['FormUserLogin']['login']);
                 if (!empty($user) && $user['User']['password'] == $this->request->data['FormUserLogin']['password']) {
-                    $this->Session->write('User', $user['User']);
-                    $this->redirect('/games');
+                    $authorized = true;
                 } else {
                     $this->FormUserLogin->invalidate('password', 'Неправильное имя пользователя или пароль.');
                 }
             }
         }
 
-        $this->set('vk_auth_link', $this->VkAuth->getLink());
+        if ($authorized) {
+            $this->Session->write('User', $user['User']);
+            $this->redirect('/games');
+        } else {
+            $this->set('vk_auth_link', $this->VkAuth->getLink());
+            $this->set('google_auth_link', $this->GoogleAuth->getLink());
+        }
+    }
+
+    /**
+     * Возвращает инфу юзера с сервиса аутентификации
+     * или false
+     */
+    private function _checkExternalAuth() {
+        $result = false;
+        $service = $this->Session->read('Auth');
+        $code = !empty($this->request->query['code']) ? $this->request->query['code'] : false; // TODO: всегда ли code ?
+        if ($service && $code) {
+            $userInfo = $this->{ucfirst($service) . 'Auth'}->getUserInfo($code);
+            if ($userInfo) {
+                $external = $this->UsersExternal->find('first', ['conditions' => [
+                    'UsersExternal.service' => $service,
+                    'UsersExternal.service_user_id' => $userInfo['service_user_id'],
+                ]]);
+                if ($external) {
+                    $userId = $external['UsersExternal']['user_id'];
+                    $this->User->save([
+                        'id' => $userId,
+                        'last_login' => date(DATE_SQL),
+                        'logins' => intval($external['User']['logins']) + 1,
+                    ]);
+                } else {
+                    $this->User->create();
+                    $this->User->save([
+                        'id' => 0,
+                        'password' => substr(String::uuid(), 0, 8),
+                        'group_id' => Group::EXTERNAL,
+                        'points' => User::START_POINTS,
+                        'registered' => date(DATE_SQL),
+                    ]);
+                    $userId = $this->User->getLastInsertId();
+                    $this->User->save([
+                        'id' => $userId,
+                        'login' => 'player' . $userId,
+                    ]);
+                    $this->UsersExternal->save([
+                        'user_id' => $userId,
+                        'service' => $service,
+                        'service_user_id' => $userInfo['service_user_id'], // TODO: возвращать
+                    ]);
+                }
+                $result = $userId;
+            }
+        }
+        return $result;
     }
 
     public function register() {
@@ -69,7 +136,7 @@ class UsersController extends AppController {
                     'id' => 0,
                     'group_id' => Group::REGISTERED,
                     'points' => User::START_POINTS,
-                    'date_registered' => $this->User->getDataSource()->expression('NOW()'),
+                    'registered' => $this->User->getDataSource()->expression('NOW()'),
                 ]);
                 $this->User->save();
                 $userId = $this->User->getLastInsertId();

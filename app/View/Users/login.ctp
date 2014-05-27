@@ -3,7 +3,10 @@
         'format' => array('input', 'error'),
     ),
 ))?>
-<a href="<?=$this->Html->url($vk_auth_link)?>"><img src="/auth_logo/vk.png" /></a>
+<span class="auth-icons">
+    <a href="<?=$this->Html->url('/users/externalAuth/vk', true)?>"><img src="/auth_logo/vk.png" /></a>
+    <a href="<?=$this->Html->url('/users/externalAuth/google', true)?>"><img src="/auth_logo/google.png" /></a>
+</span>
 <table class="login-table">
     <tr>
         <td class="w60"><label>Логин</label></td>

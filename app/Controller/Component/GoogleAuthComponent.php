@@ -1,22 +1,22 @@
 <?php
-class VkAuthComponent extends Component {
-    const CLIENT_ID = '4374131';
-    const CLIENT_SECRET = 'vG14qxJWXfsKYv01VbPP';
-    const REDIRECT_URI = 'http://sudokuplay/users/login/';
-    const API_VERSION = '5.21';
+class GoogleAuthComponent extends Component {
+    const CLIENT_ID = '581782785406.apps.googleusercontent.com';
+    const EMAIL_ADDRESS = '581782785406@developer.gserviceaccount.com';
+    const CLIENT_SECRET = 'm93r2V4rR-c0Fou8HpdoO8Jc';
+    const REDIRECT_URI = 'http://sudokuplay.ru/users/login';
 
     public function getLink() {
         $params = array(
-            'client_id'     => self::CLIENT_ID,
             'redirect_uri'  => self::REDIRECT_URI,
             'response_type' => 'code',
-            'v' => self::API_VERSION,
+            'client_id'     => self::CLIENT_ID,
+            'scope'         => 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
         );
-        $result = 'http://oauth.vk.com/authorize' . '?' . urldecode(http_build_query($params));
-        return $result;
+
+        $result = 'https://accounts.google.com/o/oauth2/auth' . '?' . urldecode(http_build_query($params));
     }
 
-    protected function _getToken($code) {
+    /*protected function _getToken($code) {
         $params = array(
             'client_id' => self::CLIENT_ID,
             'client_secret' => self::CLIENT_SECRET,
@@ -37,21 +37,13 @@ class VkAuthComponent extends Component {
         return $token;
     }
 
-    /**
-     * service_user_id
-     * first_name
-     * last_name
-     * nickname
-     * sex
-     * birthday
-     */
     public function getUserInfo($code) {
         $token = $this->_getToken($code);
         $result = false;
         if ($token) {
             $params = array(
                 'uids'         => $token['user_id'],
-                'fields'       => 'uid,first_name,nickname,last_name,sex,bdate',
+                'fields'       => 'uid,first_name,nickname,last_name,sex,bdate,photo_big',
                 'access_token' => $token['access_token'],
             );
 
@@ -63,16 +55,9 @@ class VkAuthComponent extends Component {
             $answer = file_get_contents('https://api.vk.com/method/users.get' . '?' . urldecode(http_build_query($params)), false, $streamContext);
             $userInfo = json_decode($answer, true);
             if (isset($userInfo['response'][0]['uid'])) {
-                $result = [
-                    'service_user_id' => $userInfo['response'][0]['uid'],
-                    'first_name' => $userInfo['response'][0]['first_name'],
-                    'last_name' => $userInfo['response'][0]['last_name'],
-                    'nickname' => $userInfo['response'][0]['nickname'],
-                    'sex' => $userInfo['response'][0]['sex'],
-                    'birthday' => date(DATE_SQL, strtotime($userInfo['response'][0]['bdate'])),
-                ];
+                $result = $userInfo['response'][0];
             }
         }
         return $result;
-    }
+    }*/
 }

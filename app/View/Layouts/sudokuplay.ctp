@@ -8,6 +8,7 @@
 
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" type="text/css" href="/site/css/template.css">
+<link rel="stylesheet" type="text/css" href="/site/css/extend.css">
 <script src="/js/jquery-1.10.1.min.js"></script>
 </head>
 <body>
