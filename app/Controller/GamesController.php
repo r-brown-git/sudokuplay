@@ -1,4 +1,5 @@
 <?
+App::uses('Group', 'Model');
 class GamesController extends AppController {
 
     const STATUS_PLANNED = 'planned';
@@ -15,7 +16,7 @@ class GamesController extends AppController {
 
     public function beforeFilter() {
         parent::beforeFilter();
-        if ($this->curUser['group_id'] == 0) {
+        if ($this->curUser['group_id'] == Group::GUEST) {
             $this->Auth->deny('show');
         }
     }

@@ -32,11 +32,11 @@ class UsersController extends AppController {
     /**
      * Аутентификация через OAuth
      * Если можно аутентифицироваться через этот сервис,
-     * мы устанавливаем в сессию через какой сервис он хочет зайти
+     * мы устанавливаем в сессию через какой сервис юзер хочет зайти
      * и редиректим на урл сервиса
      * @param string $service
      */
-    public function externalAuth($service = '') {
+    public function oauth($service = '') {
         if (in_array($service, $this->_authServices)) {
             $this->Session->write('Auth', $service);
             $link = $this->{ucfirst($service) . 'Auth'}->getLink(); // получаем URL для сервиса
@@ -68,7 +68,7 @@ class UsersController extends AppController {
 
         if ($authorized) {
             $this->Session->write('User', $user['User']);
-            $this->redirect('/games');
+            $this->redirect($this->Auth->redirect());
         } else {
             $this->set('vk_auth_link', $this->VkAuth->getLink());
             $this->set('google_auth_link', $this->GoogleAuth->getLink());
@@ -141,13 +141,13 @@ class UsersController extends AppController {
                 $this->User->save();
                 $userId = $this->User->getLastInsertId();
                 $this->Session->write('User', $this->User->findById($userId)['User']);
-                $this->redirect('/games/');
+                $this->redirect($this->Auth->redirect());
             }
         }
     }
 
     public function logout() {
         $this->Session->delete('User');
-        $this->redirect('/');
+        $this->redirect($this->Auth->logout());
     }
 }

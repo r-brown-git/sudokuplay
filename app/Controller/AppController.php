@@ -34,7 +34,14 @@ App::uses('Controller', 'Controller');
 class AppController extends Controller {
 
     public $components = array(
-        'Auth',
+        'Auth' => array(
+            'authenticate' => array('Form'),
+            'loginRedirect' => array(
+                'controller' => 'games',
+                'action' => 'index'
+            ),
+            'logoutRedirect' => '/',
+        ),
         'Session',
     );
 
@@ -53,6 +60,9 @@ class AppController extends Controller {
     public $curUser = array();
 
     public function beforeFilter() {
+        if (isset($_COOKIE[''])) {
+
+        }
         $this->Auth->allow();
 
         $authData = (array)$this->Session->read('User');
