@@ -3,12 +3,11 @@ class GoogleAuthComponent extends Component {
     const CLIENT_ID = '581782785406.apps.googleusercontent.com';
     const EMAIL_ADDRESS = '581782785406@developer.gserviceaccount.com';
     const CLIENT_SECRET = 'm93r2V4rR-c0Fou8HpdoO8Jc';
-    const REDIRECT_URI = 'http://sudokuplay.ru/users/login';
     const GRANT_TYPE = 'authorization_code';
 
     public function getLink() {
         $params = array(
-            'redirect_uri'  => self::REDIRECT_URI,
+            'redirect_uri'  => 'http://'.$_SERVER['HTTP_HOST'].'/users/login',
             'response_type' => 'code',
             'client_id'     => self::CLIENT_ID,
             'scope'         => 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
@@ -62,11 +61,11 @@ class GoogleAuthComponent extends Component {
                 'access_token' => $token['access_token'],
             );
 
-            $streamContext = stream_context_create([
-                'http' => [
+            $streamContext = stream_context_create(array(
+                'http' => array(
                     'ignore_errors' => true,
-                ],
-            ]);
+                ),
+            ));
             $answer = file_get_contents('https://api.vk.com/method/users.get?' . urldecode(http_build_query($params)), false, $streamContext);
             pr($answer);die;
             $userInfo = json_decode($answer, true);

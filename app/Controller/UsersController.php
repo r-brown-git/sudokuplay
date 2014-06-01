@@ -71,11 +71,11 @@ class UsersController extends AppController {
 
         if ($authorized) {
             $this->Session->write('User', $user['User']);
-            $this->User->save([
+            $this->User->save(array(
                 'id' => $user['User']['id'],
                 'last_login' => date(DATE_SQL),
                 'logins' => ConnectionManager::getDataSource('default')->expression('`logins` + 1'),
-            ]);
+            ));
             $this->redirect($this->Auth->redirect());
         } else {
             $this->set('vk_auth_link', $this->VkAuth->getLink());
@@ -94,44 +94,44 @@ class UsersController extends AppController {
         if ($service && $code) {
             $userInfo = $this->{ucfirst($service) . 'Auth'}->getUserInfo($code);
             if ($userInfo) {
-                $external = $this->UsersExternal->find('first', ['conditions' => [
+                $external = $this->UsersExternal->find('first', array('conditions' => array(
                     'UsersExternal.service' => $service,
                     'UsersExternal.service_user_id' => $userInfo['service_user_id'],
-                ]]);
+                )));
                 if ($external) {
                     $userId = $external['UsersExternal']['user_id'];
                 } else {
                     $this->User->create();
-                    $this->User->save([
+                    $this->User->save(array(
                         'id' => 0,
                         'password' => substr(String::uuid(), 0, 8),
                         'group_id' => Group::EXTERNAL,
                         'points' => User::START_POINTS,
                         'registered' => date(DATE_SQL),
-                    ]);
+                    ));
                     $userId = $this->User->getLastInsertId();
-                    $this->User->save([
+                    $this->User->save(array(
                         'id' => $userId,
                         'login' => 'player' . $userId,
-                    ]);
+                    ));
 
                     $this->UsersExternal->create();
-                    $this->UsersExternal->save([
+                    $this->UsersExternal->save(array(
                         'user_id' => $userId,
                         'service' => $service,
                         'service_user_id' => $userInfo['service_user_id'], // TODO: возвращать
-                    ]);
+                    ));
 
                     $this->UsersProfile->create();
                 }
-                $this->UsersProfile->save([
+                $this->UsersProfile->save(array(
                     'user_id' => $userId,
                     'first_name' => $userInfo['first_name'],
                     'last_name' => $userInfo['last_name'],
                     'nickname' => $userInfo['nickname'],
                     'sex' => $userInfo['sex'],
                     'birthday' => $userInfo['birthday'],
-                ]);
+                ));
 
                 $result = $userId;
             }
@@ -148,12 +148,12 @@ class UsersController extends AppController {
             }
             if ($this->FormUserRegister->validates()) {
                 $this->User->set($this->data['FormUserRegister']);
-                $this->User->set([
+                $this->User->set(array(
                     'id' => 0,
                     'group_id' => Group::REGISTERED,
                     'points' => User::START_POINTS,
                     'registered' => $this->User->getDataSource()->expression('NOW()'),
-                ]);
+                ));
                 $this->User->save();
                 $userId = $this->User->getLastInsertId();
                 $this->Session->write('User', $this->User->findById($userId)['User']);

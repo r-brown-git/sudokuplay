@@ -1,7 +1,6 @@
 <?php
 class OkAuthComponent extends Component {
     const CLIENT_ID = '1090950656';
-    const REDIRECT_URI = 'http://sudokuplay.ru/users/login';
     const CLIENT_SECRET = '01AD4608E1BAEA22D5D852AF';
     const APPLICATION_KEY = 'CBAHJHACEBABABABA';
 
@@ -10,7 +9,7 @@ class OkAuthComponent extends Component {
             'client_id'     => self::CLIENT_ID,
             'scope'         => 'SET_STATUS',
             'response_type' => 'code',
-            'redirect_uri'  => self::REDIRECT_URI,
+            'redirect_uri'  => 'http://'. $_SERVER['HTTP_HOST'] .'/users/login',
         );
         $result = 'http://www.odnoklassniki.ru/oauth/authorize?' . urldecode(http_build_query($params));
         return $result;
@@ -59,25 +58,25 @@ class OkAuthComponent extends Component {
             );
             $params['sig'] = $this->_calculateSig($params);
 
-            $context = stream_context_create([
-                'http' => [
+            $context = stream_context_create(array(
+                'http' => array(
                     'ignore_errors' => true,
-                ],
-            ]);
+                ),
+            ));
 
             $answer = file_get_contents('http://api.odnoklassniki.ru/fb.do?' . urldecode(http_build_query($params)), false, $context);
 
             $userInfo = json_decode($answer, true);
 
             if (isset($userInfo['uid'])) {
-                $result = [
+                $result = array(
                     'service_user_id' => $userInfo['uid'],
                     'first_name' => $userInfo['first_name'],
                     'last_name' => $userInfo['last_name'],
                     'nickname' => '',
                     'sex' => $userInfo['gender'] == 'male' ? 'M' : ($userInfo['gender'] == 'female' ? 'F' : null),
                     'birthday' => $userInfo['birthday'],
-                ];
+                );
             }
         }
         return $result;

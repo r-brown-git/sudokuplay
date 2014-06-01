@@ -2,13 +2,12 @@
 class VkAuthComponent extends Component {
     const CLIENT_ID = '4374131';
     const CLIENT_SECRET = 'vG14qxJWXfsKYv01VbPP';
-    const REDIRECT_URI = 'http://sudokuplay.ru/users/login/';
     const API_VERSION = '5.21';
 
     public function getLink() {
         $params = array(
             'client_id'     => self::CLIENT_ID,
-            'redirect_uri'  => self::REDIRECT_URI,
+            'redirect_uri'  => 'http://'. $_SERVER['HTTP_HOST'] .'/users/login/',
             'response_type' => 'code',
             'v' => self::API_VERSION,
         );
@@ -24,12 +23,12 @@ class VkAuthComponent extends Component {
             'redirect_uri' => self::REDIRECT_URI
         );
 
-        $streamContext = stream_context_create([
-            'http' => [
+        $streamContext = stream_context_create(array(
+            'http' => array(
                 'ignore_errors' => true,
-            ],
-        ]);
-        $answer = file_get_contents('https://oauth.vk.com/access_token' . '?' . urldecode(http_build_query($params)), false, $streamContext);
+            ),
+        ));
+        $answer = file_get_contents('https://oauth.vk.com/access_token?' . urldecode(http_build_query($params)), false, $streamContext);
         $token = json_decode($answer, true);
         if (!isset($token['access_token'])) {
             return false;
@@ -55,11 +54,11 @@ class VkAuthComponent extends Component {
                 'access_token' => $token['access_token'],
             );
 
-            $streamContext = stream_context_create([
-                'http' => [
+            $streamContext = stream_context_create(array(
+                'http' => array(
                     'ignore_errors' => true,
-                ],
-            ]);
+                ),
+            ));
             $answer = file_get_contents('https://api.vk.com/method/users.get' . '?' . urldecode(http_build_query($params)), false, $streamContext);
             $userInfo = json_decode($answer, true);
             if (isset($userInfo['response'][0]['uid'])) {
