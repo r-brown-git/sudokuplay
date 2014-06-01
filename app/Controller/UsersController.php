@@ -9,16 +9,19 @@ class UsersController extends AppController {
         'FormUserLogin',
         'FormUserRegister',
         'UsersExternal',
+        'UsersProfile',
     ];
 
     public $components = [
         'VkAuth',
         'GoogleAuth',
+        'OkAuth',
     ];
 
     private $_authServices = [
         'vk',
         'google',
+        'ok',
     ];
 
     public function index() {
@@ -111,12 +114,24 @@ class UsersController extends AppController {
                         'id' => $userId,
                         'login' => 'player' . $userId,
                     ]);
+
+                    $this->UsersExternal->create();
                     $this->UsersExternal->save([
                         'user_id' => $userId,
                         'service' => $service,
                         'service_user_id' => $userInfo['service_user_id'], // TODO: возвращать
                     ]);
+
+                    $this->UsersProfile->create();
+                    $this->UsersProfile->save([
+                        'user_id' => $userId,
+                        'first_name' => $userInfo['first_name'],
+                        'last_name' => $userInfo['last_name'],
+                        'sex' => $userInfo['sex'],
+                        'birthday' => $userInfo['birthday'],
+                    ]);
                 }
+
                 $result = $userId;
             }
         }

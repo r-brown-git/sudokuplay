@@ -60,9 +60,10 @@ class AppController extends Controller {
     public $curUser = array();
 
     public function beforeFilter() {
-        if (isset($_COOKIE[''])) {
-
+        if (!isset($_COOKIE['68327e5dc44ceac2f21bffb815340486'])) {
+            die('We are the champions  -  my friends !');
         }
+
         $this->Auth->allow();
 
         $authData = (array)$this->Session->read('User');
