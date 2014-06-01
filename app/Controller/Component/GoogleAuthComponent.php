@@ -58,7 +58,7 @@ class GoogleAuthComponent extends Component {
         if ($token) {
             $params = array(
                 'uids'         => $token['user_id'],
-                'fields'       => 'uid,first_name,nickname,last_name,sex,bdate,photo_big',
+                'fields'       => 'uid,first_name,nickname,last_name,sex,bdate',
                 'access_token' => $token['access_token'],
             );
 
@@ -67,7 +67,8 @@ class GoogleAuthComponent extends Component {
                     'ignore_errors' => true,
                 ],
             ]);
-            $answer = file_get_contents('https://api.vk.com/method/users.get' . '?' . urldecode(http_build_query($params)), false, $streamContext);
+            $answer = file_get_contents('https://api.vk.com/method/users.get?' . urldecode(http_build_query($params)), false, $streamContext);
+            pr($answer);die;
             $userInfo = json_decode($answer, true);
             if (isset($userInfo['response'][0]['uid'])) {
                 $result = $userInfo['response'][0];

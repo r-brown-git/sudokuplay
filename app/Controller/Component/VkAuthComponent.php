@@ -2,7 +2,7 @@
 class VkAuthComponent extends Component {
     const CLIENT_ID = '4374131';
     const CLIENT_SECRET = 'vG14qxJWXfsKYv01VbPP';
-    const REDIRECT_URI = 'http://sudokuplay/users/login/';
+    const REDIRECT_URI = 'http://sudokuplay.ru/users/login/';
     const API_VERSION = '5.21';
 
     public function getLink() {
@@ -12,7 +12,7 @@ class VkAuthComponent extends Component {
             'response_type' => 'code',
             'v' => self::API_VERSION,
         );
-        $result = 'http://oauth.vk.com/authorize' . '?' . urldecode(http_build_query($params));
+        $result = 'http://oauth.vk.com/authorize?' . urldecode(http_build_query($params));
         return $result;
     }
 
@@ -68,8 +68,8 @@ class VkAuthComponent extends Component {
                     'first_name' => $userInfo['response'][0]['first_name'],
                     'last_name' => $userInfo['response'][0]['last_name'],
                     'nickname' => $userInfo['response'][0]['nickname'],
-                    'sex' => $userInfo['response'][0]['sex'],
-                    'birthday' => date(DATE_SQL, strtotime($userInfo['response'][0]['bdate'])),
+                    'sex' => $userInfo['response'][0]['sex'] == 2 ? 'M' : ($userInfo['response'][0]['sex'] == 1 ? 'F' : null),
+                    'birthday' => date(DATE_SQL, strtotime($userInfo['response'][0]['birthday'])),
                 ];
             }
         }

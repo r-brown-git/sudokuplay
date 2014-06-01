@@ -1,7 +1,7 @@
 <?php
 class OkAuthComponent extends Component {
     const CLIENT_ID = '1090950656';
-    const REDIRECT_URI = 'http://sudokuplay/users/login';
+    const REDIRECT_URI = 'http://sudokuplay.ru/users/login';
     const CLIENT_SECRET = '01AD4608E1BAEA22D5D852AF';
     const APPLICATION_KEY = 'CBAHJHACEBABABABA';
 
@@ -12,7 +12,7 @@ class OkAuthComponent extends Component {
             'response_type' => 'code',
             'redirect_uri'  => self::REDIRECT_URI,
         );
-        $result = 'http://www.odnoklassniki.ru/oauth/authorize' . '?' . urldecode(http_build_query($params));
+        $result = 'http://www.odnoklassniki.ru/oauth/authorize?' . urldecode(http_build_query($params));
         return $result;
     }
 

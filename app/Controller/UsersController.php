@@ -71,6 +71,11 @@ class UsersController extends AppController {
 
         if ($authorized) {
             $this->Session->write('User', $user['User']);
+            $this->User->save([
+                'id' => $user['User']['id'],
+                'last_login' => date(DATE_SQL),
+                'logins' => ConnectionManager::getDataSource('default')->expression('`logins` + 1'),
+            ]);
             $this->redirect($this->Auth->redirect());
         } else {
             $this->set('vk_auth_link', $this->VkAuth->getLink());
@@ -95,11 +100,6 @@ class UsersController extends AppController {
                 ]]);
                 if ($external) {
                     $userId = $external['UsersExternal']['user_id'];
-                    $this->User->save([
-                        'id' => $userId,
-                        'last_login' => date(DATE_SQL),
-                        'logins' => intval($external['User']['logins']) + 1,
-                    ]);
                 } else {
                     $this->User->create();
                     $this->User->save([
@@ -123,14 +123,15 @@ class UsersController extends AppController {
                     ]);
 
                     $this->UsersProfile->create();
-                    $this->UsersProfile->save([
-                        'user_id' => $userId,
-                        'first_name' => $userInfo['first_name'],
-                        'last_name' => $userInfo['last_name'],
-                        'sex' => $userInfo['sex'],
-                        'birthday' => $userInfo['birthday'],
-                    ]);
                 }
+                $this->UsersProfile->save([
+                    'user_id' => $userId,
+                    'first_name' => $userInfo['first_name'],
+                    'last_name' => $userInfo['last_name'],
+                    'nickname' => $userInfo['nickname'],
+                    'sex' => $userInfo['sex'],
+                    'birthday' => $userInfo['birthday'],
+                ]);
 
                 $result = $userId;
             }
