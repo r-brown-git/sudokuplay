@@ -18,7 +18,7 @@ class OkAuthComponent extends Component {
     protected function _getToken($code) {
         $params = array(
             'code' => $code,
-            'redirect_uri' => self::REDIRECT_URI,
+            'redirect_uri' => 'http://'. $_SERVER['HTTP_HOST'] .'/users/login',
             'grant_type' => 'authorization_code',
             'client_id' => self::CLIENT_ID,
             'client_secret' => self::CLIENT_SECRET,

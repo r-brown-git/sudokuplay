@@ -51,7 +51,7 @@ class AppController extends Controller {
 
     public $layout = 'sudokuplay';
 
-    public $pageTitle = '';
+    public $pageTitle = array();
 
     /**
      * Данные авторизованного пользователя
@@ -60,10 +60,6 @@ class AppController extends Controller {
     public $curUser = array();
 
     public function beforeFilter() {
-        if (!isset($_COOKIE['68327e5dc44ceac2f21bffb815340486'])) {
-            die('We are the champions  -  my friends !');
-        }
-
         $this->Auth->allow();
 
         $authData = (array)$this->Session->read('User');
@@ -79,6 +75,6 @@ class AppController extends Controller {
 
     public function beforeRender() {
         $this->set('page_title', $this->pageTitle);
-        $this->set('user', $this->curUser);
+        $this->set('cur_user', $this->curUser);
     }
 }

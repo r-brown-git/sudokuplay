@@ -1,37 +1,51 @@
 <? if ($games) {
     foreach ($games as $aGame) { ?>
 
-<div class="game-summary">
-    <div class="game-descr">
-        <h3><a href="<?=$this->Html->url('/games/'.$aGame['Game']['id'])?>"><?=$aGame['Game']['title']?></a></h3>
-        <? if ($aGame['Game']['description']) { ?><div class="anounce"><?=$aGame['Game']['description']?></div><? } ?>
-        <div class="limits">
-        <? foreach($aGame['GamesTag'] as $aTag) {
-            if ($aTag['Tag']) { ?>
-                <a href="/" class="post-limit"><?=$aTag['Tag']['tag']?></a>
-            <? }
-        } ?>
+        <div>
+            <div id="game-mini-list">
+                <div class="game-summary narrow">
+                    <div class="cp">
+                        <div class="column-number col1">
+                            <div class="mini-counts">
+                                <span title="0 votes">0</span>
+                            </div>
+                            <div>&nbsp;</div>
+                        </div>
+                        <div class="column-number col2">
+                            <div class="mini-counts">
+                                <span title="0 votes">0</span>
+                            </div>
+                            <div>&nbsp;</div>
+                        </div>
+                        <div class="column-number col3">
+                            <div class="mini-counts">
+                                <span title="0 votes">0</span>
+                            </div>
+                            <div>&nbsp;</div>
+                        </div>
+                    </div>
+                    <div class="summary">
+                        <h3>
+                            <a class="question-hyperlink" href="<?=$this->Html->url('/games/'.$aGame['Game']['id'])?>">
+                                <?=htmlspecialchars($aGame['Game']['title'])?>
+                            </a>
+                        </h3>
+                        <div class="tags">
+                            <? foreach($aGame['GamesTag'] as $aTag) {
+                                if ($aTag['Tag']) { ?>
+                                    <a class="post-tag" rel="tag" title="" href="/"><?=$aTag['Tag']['tag']?></a>
+                                <? }
+                            } ?>
+                        </div>
+                        <div class="started">
+                            <a class="started-link" href="/">
+                                <?=$this->DateTime->formatGameList($aGame['Game']['game_start'])?>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="started">
-            <span title="2013-02-22 11:39:30">2ч 33м назад</span>
-        </div>
-    </div>
-    <div class="cp">
-        <!--<div class="col1">
-            <div class="mini-counts">E</div>
-            <div>тип</div>
-        </div>-->
-        <div class="col2">
-            <div class="mini-counts">2.2</div>
-            <div>множит</div>
-        </div>
-        <div class="col3">
-            <div class="mini-counts">8/10</div>
-            <div>в игре</div>
-        </div>
-    </div>
-</div>
-
 <?
     }
 }

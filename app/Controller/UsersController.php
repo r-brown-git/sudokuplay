@@ -8,6 +8,7 @@ class UsersController extends AppController {
         'User',
         'FormUserLogin',
         'FormUserRegister',
+        'FormProfileEdit',
         'UsersExternal',
         'UsersProfile',
     ];
@@ -24,8 +25,22 @@ class UsersController extends AppController {
         'ok',
     ];
 
+    public $pageTitle = ['/users' => 'Пользователи'];
+
+    public function beforeFilter() {
+        parent::beforeFilter();
+        if ($this->curUser['group_id'] == Group::GUEST) {
+            $this->Auth->deny('profile');
+            $this->Auth->deny('edit');
+        }
+    }
+
     public function index() {
-        $this->pageTitle = 'Список пользователей';
+        $this->User->bindModel(array(
+            'hasOne' => array(
+                'UsersProfile'
+            ),
+        ));
         $users = $this->User->find('all', array(
             'order' => array('id' => 'ASC'),
         ));
@@ -50,7 +65,7 @@ class UsersController extends AppController {
     }
 
     public function login() {
-        $this->pageTitle = 'Авторизация';
+        $this->pageTitle = ['Авторизация'];
 
         $authorized = false;
         if ($userId = $this->_checkExternalAuth()) {
@@ -140,7 +155,7 @@ class UsersController extends AppController {
     }
 
     public function register() {
-        $this->pageTitle = 'Регистрация';
+        $this->pageTitle = ['Регистрация'];
         if (!empty($this->data['FormUserRegister'])) {
             $this->FormUserRegister->set($this->data['FormUserRegister']);
             if ($this->data['FormUserRegister']['password'] != $this->data['FormUserRegister']['password2']) {
@@ -165,5 +180,81 @@ class UsersController extends AppController {
     public function logout() {
         $this->Session->delete('User');
         $this->redirect($this->Auth->logout());
+    }
+
+    public function profile($userId = '') {
+        $this->pageTitle[] = 'профиль';
+        if ($userId) {
+            $user = $this->User->findById($userId);
+        } else {
+            $user = $this->User->findById($this->curUser['id']);
+        }
+        if (!$user) {
+            throw new NotFoundException();
+        }
+    }
+
+    public function edit() {
+        $this->pageTitle['/users/profile'] = 'профиль';
+        $this->pageTitle[] = 'редактирование';
+        $this->User->bindModel(array(
+            'hasOne' => array(
+                'UsersProfile'
+            ),
+        ));
+        $user = $this->User->findById($this->curUser['id']);
+        if (!$user) {
+            throw new NotFoundException();
+        }
+        if (!empty($this->request->data)) {
+            $this->FormProfileEdit->set(array_merge(
+                $this->request->data['User'],
+                $this->request->data['UsersProfile']
+            ));
+            if ($this->FormProfileEdit->validates()) {
+                $this->request->data['UsersProfile']['user_id'] = $user['User']['id'];
+
+                $this->User->save(
+                    $this->request->data['User'],
+                    false,
+                    array('password')
+                );
+                $this->Session->write('User.password', $this->request->data['User']['password']);
+                $this->UsersProfile->save(
+                    $this->request->data['UsersProfile'],
+                    false,
+                    array('user_id', 'first_name', 'last_name', 'email', 'nickname', 'sex', 'birthday', 'location', 'gravatar')
+                );
+                $this->redirect($this->request->here);
+            } else {
+                $this->User->validationErrors = $this->FormProfileEdit->validationErrors;
+                $this->UsersProfile->validationErrors = $this->FormProfileEdit->validationErrors;
+            }
+        } else {
+            $this->request->data = $user;
+        }
+        $this->set('gravatarKey', $user['UsersProfile'] ? $user['UsersProfile']['gravatar'] : '');
+    }
+
+    public function newgravatar() {
+        $this->layout = 'json';
+        $result = array(
+            'status' => 'error',
+        );
+        if ($this->request->is('ajax')) {
+            if ($this->curUser['group_id'] > Group::GUEST) {
+                $gravatarKey = substr(String::uuid(), 0, 8);
+                if ($this->UsersProfile->save(array(
+                    'user_id' => $this->curUser['id'],
+                    'gravatar' => $gravatarKey,
+                ))) {
+                    $result['status'] = 'ok';
+                    $result['key'] = $gravatarKey;
+                    $result['md5key'] = md5($gravatarKey);
+                }
+            }
+        }
+        $this->set('result', $result);
+        $this->render('../empty');
     }
 }

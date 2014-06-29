@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Sudokuplay.ru<? if ($page_title) { ?> : <?=$page_title?><? } ?></title>
+<title>Sudokuplay.ru<? if ($page_title) { echo ': ' . implode(' - ', $page_title); } ?>
+</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="keywords" content="судоку, sudoku, игра, играть, турнир, онлайн, online, мультиплеер, multiplayer, одновременно, рейтинг, статистика, головоломки, генератор, алгоритм">
 <meta name="description" content="Решайте судоку одновременно с другими игроками на одном поле !">
@@ -10,6 +11,7 @@
 <link rel="stylesheet" type="text/css" href="/site/css/template.css">
 <link rel="stylesheet" type="text/css" href="/site/css/extend.css">
 <script src="/js/jquery-1.10.1.min.js"></script>
+<script src="/site/js/main.js"></script>
 </head>
 <body>
 <!--<div style="position:absolute;left:50px;">
@@ -27,8 +29,8 @@
     </div>
     <div id="topbar">
         <div id="hlinks">
-            <? if ($user['group_id'] > 0) { ?>
-                <a href="<?=$this->Html->url('/users/profile')?>" title="профиль"><?=$user['login']?></a>
+            <? if ($cur_user['group_id'] > 0) { ?>
+                <a href="<?=$this->Html->url('/users/profile')?>" title="профиль"><?=$cur_user['login']?></a>
                 <span class="lsep">|</span>
                 <a href="<?=$this->Html->url('/users/logout')?>" title="выход">выход</a>
             <? } else { ?>
@@ -71,7 +73,14 @@
 <div id="content">
     <div id="mainbar">
         <div class="subheader">
-            <h1><?=$page_title?></h1>
+            <h1><?
+            $last = array_pop($page_title);
+            foreach ($page_title as $url => $title) {
+                echo '<a href="'.$this->Html->url($url).'">'. $title .'</a> / ';
+            }
+            echo $last;
+            ?>
+            </h1>
             <div id="tabs">
                 <a href="/" class="youarehere" title="">все</a>
                 <a href="/" title=""><span class="bounty">168</span>судоку</a>

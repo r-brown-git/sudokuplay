@@ -2,7 +2,5 @@
 class UsersExternal extends AppModel {
     public $useTable = 'users_external';
 
-    public $belongsTo = array(
-        'User',
-    );
+    public $primaryKey = 'user_id';
 }

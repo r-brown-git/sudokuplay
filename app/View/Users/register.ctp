@@ -5,7 +5,7 @@
 ))?>
 <table class="login-table">
     <tr>
-        <td class="w130"><label>Логин</label></td>
+        <td class="register-table"><label>Логин</label></td>
         <td>
             <?=$this->Form->input('FormUserRegister.login', array(
                 'type' => 'text',
@@ -13,7 +13,7 @@
         </td>
     </tr>
     <tr>
-        <td><label>Пароль</label></td>
+        <td class="register-table"><label>Пароль</label></td>
         <td>
             <?=$this->Form->input('FormUserRegister.password', array(
                 'type' => 'password',
@@ -21,7 +21,7 @@
         </td>
     </tr>
     <tr>
-        <td><label>Повтор пароля</label></td>
+        <td class="register-table"><label>Повтор пароля</label></td>
         <td>
             <?=$this->Form->input('FormUserRegister.password2', array(
                 'type' => 'password',

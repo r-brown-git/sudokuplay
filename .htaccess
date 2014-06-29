@@ -3,3 +3,9 @@
    RewriteRule    ^$ app/webroot/    [L]
    RewriteRule    (.*) app/webroot/$1 [L]
 </IfModule>
+
+AuthType Basic
+AuthName "Beta test"
+# (Following line optional)
+AuthBasicProvider file
+AuthUserFile /var/www/passwords

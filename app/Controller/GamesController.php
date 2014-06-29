@@ -12,7 +12,7 @@ class GamesController extends AppController {
         'Tag',
     );
 
-    public $pageTitle = 'Игры';
+    public $pageTitle = ['/games' => 'Игры'];
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -55,6 +55,7 @@ class GamesController extends AppController {
         if (!$game) {
             throw new NotFoundException();
         }
+        $this->pageTitle[] = $game['Game']['title'];
         $found = $this->_getFoundCells($gameId);
 
         $this->set('game', $game);
