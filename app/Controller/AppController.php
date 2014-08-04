@@ -21,6 +21,8 @@
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 App::uses('Controller', 'Controller');
+App::uses('UsersGroup', 'Model');
+App::uses('UsersSession', 'Model');
 
 /**
  * Application Controller
@@ -43,10 +45,13 @@ class AppController extends Controller {
             'logoutRedirect' => '/',
         ),
         'Session',
+        'UsersCookie',
     );
 
     public $uses = array(
-        'User',
+        'ChatMessage',
+        'UsersSession',
+        'Game',
     );
 
     public $layout = 'sudokuplay';
@@ -60,17 +65,28 @@ class AppController extends Controller {
     public $curUser = array();
 
     public function beforeFilter() {
+
         $this->Auth->allow();
 
-        $authData = (array)$this->Session->read('User');
-        $guestData = array(
-            'id' => 0,
-            'login' => 'guest',
-            'group_id' => 0,
-        );
-        $this->curUser = array_merge($guestData, $authData);
+        $authData = $this->Session->read('User');
+        if (!$authData) {
+            $authData = $this->UsersCookie->cookieAuth();
+        }
+        if (!$authData) {
+            $authData = array(
+                'id' => 0,
+                'login' => 'guest',
+                'group_id' => 0,
+            );
+        }
+        $this->curUser = $authData;
 
-        $this->set('top_users', $this->User->getTopUsers());
+        $this->set('usid', $this->curUser['id'] != 0 ? $this->Cookie->read('usid') : null); // для запросов к сокету node.js
+        $this->set('last_chat_messages', $this->ChatMessage->getLastChatMessages());
+
+        $this->set('count_online_users', $this->UsersSession->getOnlineUsersCount());
+        $this->set('count_active_games', $this->Game->getActiveGamesCount());
+
     }
 
     public function beforeRender() {

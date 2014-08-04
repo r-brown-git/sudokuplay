@@ -1,14 +1,14 @@
 <div id="user-info-container">
     <div class="user-header-left">
         <div class="gravatar">
-            <a href="http://stackoverflow.com/users/3661630/pixelbits">
+            <a href="/">
                 <div class="gravatar-wrapper-128">
-                    <img class="logo" alt="" src="http://www.gravatar.com/avatar/3f02ebe3d7929b091e3d8ccfde2f3bc6/?s=128&d=wavatar">
+                    <img class="logo" alt="" src="/uploads/avatar/mm48.png">
                 </div>
             </a>
             <div class="reputation">
                 <span>
-                    1 525
+                    <?=number_format($profile['Calc']['top'], 0, '.', '&nbsp;')?>
                 </span>
                 место в топе
             </div>
@@ -19,23 +19,23 @@
                     <tr>
                         <th>профиль</th>
                         <td>логин</td>
-                        <td><b>Bershka</b></td>
+                        <td><b><?=htmlspecialchars($profile['User']['login'])?></b></td>
                     </tr>
                     <tr>
                         <th></th>
                         <td>откуда</td>
-                        <td></td>
+                        <td><?=htmlspecialchars($profile['UsersProfile']['location'])?></td>
                     </tr>
                     <tr>
                         <th></th>
-                        <td>дата рождения</td>
-                        <td>28.10.1989</td>
+                        <td>день рождения</td>
+                        <td><?=$this->DateTime->formatBirthday($profile['UsersProfile']['birthday'])?></td>
                     </tr>
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                         <th>активность</th>
                         <td>на сайте</td>
-                        <td>31 days</td>
+                        <td><?=$this->DateTime->formatTimeFrom($profile['User']['registered'])?></td>
                     </tr>
                     <tr>
                         <th></th>
@@ -50,35 +50,32 @@
                     <tr><td>&nbsp;</td></tr>
                     <tr>
                         <th>статистика</th>
-                        <td>просмотров</td>
-                        <td>47</td>
-                    </tr>
-                    <tr>
-                        <th></th>
                         <td>участие в играх</td>
                         <td>47</td>
                     </tr>
                     <tr>
                         <th></th>
                         <td>всего баллов</td>
-                        <td>47</td>
+                        <td><?=htmlspecialchars($profile['User']['points'])?></td>
                     </tr>
                     <tr>
                         <th></th>
                         <td>опыт</td>
                         <td><b>123,2</b></td>
                     </tr>
-                    <tr><td>&nbsp;</td></tr>
+                    <!--<tr><td>&nbsp;</td></tr>
                     <tr>
                         <th>дополнительно</th>
                         <td colspan="2"><div class="user-about-me">qew</div></td>
-                    </tr>
+                    </tr>-->
                 </tbody>
             </table>
         </div>
+        <? if ($profile['User']['id'] == $cur_user['id']) { ?>
         <div class="user-edit-link">
             <a href="<?=$this->Html->url('/users/edit')?>">редактировать</a>
         </div>
+        <? } ?>
         <br>
     </div>
 </div>

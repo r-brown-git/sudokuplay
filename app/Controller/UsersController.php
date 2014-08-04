@@ -1,6 +1,7 @@
 <?php
 App::uses('User', 'Model');
-App::uses('Group', 'Model');
+App::uses('UsersGroup', 'Model');
+App::uses('UsersSession', 'Model');
 App::uses('String', 'Utility');
 
 class UsersController extends AppController {
@@ -11,12 +12,14 @@ class UsersController extends AppController {
         'FormProfileEdit',
         'UsersExternal',
         'UsersProfile',
+        'UsersGroup',
     ];
 
     public $components = [
         'VkAuth',
         'GoogleAuth',
         'OkAuth',
+        'Paginator',
     ];
 
     private $_authServices = [
@@ -25,25 +28,32 @@ class UsersController extends AppController {
         'ok',
     ];
 
-    public $pageTitle = ['/users' => 'Пользователи'];
+    public $pageTitle = ['/users' => 'пользователи'];
 
     public function beforeFilter() {
         parent::beforeFilter();
-        if ($this->curUser['group_id'] == Group::GUEST) {
-            $this->Auth->deny('profile');
-            $this->Auth->deny('edit');
+        if ($this->curUser['group_id'] == UsersGroup::GUEST) {
+            $this->Auth->deny(array('show', 'edit'));
         }
     }
 
-    public function index() {
+    public function index($param = '') {
         $this->User->bindModel(array(
             'hasOne' => array(
-                'UsersProfile'
+                'UsersProfile',
+                'UsersSession',
             ),
         ));
-        $users = $this->User->find('all', array(
-            'order' => array('id' => 'ASC'),
-        ));
+        $this->Paginator->settings['limit'] = 15;
+        $this->Paginator->settings['order'] = array(
+            'User.points' => 'DESC',
+            'User.registered' => 'DESC',
+        );
+        $conditions = array();
+        if ($param == 'online') {
+            $conditions['UsersSession.last_connect >='] = date(DATE_SQL, strtotime(UsersSession::ONLINE_DELAY));
+        }
+        $users = $this->paginate('User', $conditions);
         $this->set('users', $users);
     }
 
@@ -86,12 +96,9 @@ class UsersController extends AppController {
 
         if ($authorized) {
             $this->Session->write('User', $user['User']);
-            $this->User->save(array(
-                'id' => $user['User']['id'],
-                'last_login' => date(DATE_SQL),
-                'logins' => ConnectionManager::getDataSource('default')->expression('`logins` + 1'),
-            ));
-            $this->redirect($this->Auth->redirect());
+            $this->UsersCookie->createUsid($user['User']['id']);
+            $this->UsersGroup->id = $user['User']['group_id'];
+            $this->redirect($this->UsersGroup->field('home_page'));
         } else {
             $this->set('vk_auth_link', $this->VkAuth->getLink());
             $this->set('google_auth_link', $this->GoogleAuth->getLink());
@@ -120,7 +127,7 @@ class UsersController extends AppController {
                     $this->User->save(array(
                         'id' => 0,
                         'password' => substr(String::uuid(), 0, 8),
-                        'group_id' => Group::EXTERNAL,
+                        'group_id' => UsersGroup::EXTERNAL_REG,
                         'points' => User::START_POINTS,
                         'registered' => date(DATE_SQL),
                     ));
@@ -134,7 +141,7 @@ class UsersController extends AppController {
                     $this->UsersExternal->save(array(
                         'user_id' => $userId,
                         'service' => $service,
-                        'service_user_id' => $userInfo['service_user_id'], // TODO: возвращать
+                        'service_user_id' => $userInfo['service_user_id'],
                     ));
 
                     $this->UsersProfile->create();
@@ -165,13 +172,14 @@ class UsersController extends AppController {
                 $this->User->set($this->data['FormUserRegister']);
                 $this->User->set(array(
                     'id' => 0,
-                    'group_id' => Group::REGISTERED,
+                    'group_id' => UsersGroup::REGISTERED,
                     'points' => User::START_POINTS,
                     'registered' => $this->User->getDataSource()->expression('NOW()'),
                 ));
                 $this->User->save();
                 $userId = $this->User->getLastInsertId();
                 $this->Session->write('User', $this->User->findById($userId)['User']);
+                $this->UsersCookie->createUsid($userId);
                 $this->redirect($this->Auth->redirect());
             }
         }
@@ -179,11 +187,17 @@ class UsersController extends AppController {
 
     public function logout() {
         $this->Session->delete('User');
+        $this->UsersCookie->deleteUsid($this->curUser['id']);
         $this->redirect($this->Auth->logout());
     }
 
-    public function profile($userId = '') {
-        $this->pageTitle[] = 'профиль';
+    public function show($userId = '') {
+        throw new ForbiddenException();
+        $this->User->bindModel(array(
+            'hasOne' => array(
+                'UsersProfile'
+            ),
+        ));
         if ($userId) {
             $user = $this->User->findById($userId);
         } else {
@@ -192,11 +206,21 @@ class UsersController extends AppController {
         if (!$user) {
             throw new NotFoundException();
         }
+        $this->pageTitle[] = $user['User']['login'];
+        $user['Calc']['top'] = 1 + $this->User->find('count', ['conditions' => [
+            'OR' => [
+                'User.points >' => $user['User']['points'],
+                'AND' => [
+                    'User.points' => $user['User']['points'],
+                    'User.registered <' => $user['User']['registered'],
+                ]
+            ]
+        ]]);
+
+        $this->set('profile', $user);
     }
 
     public function edit() {
-        $this->pageTitle['/users/profile'] = 'профиль';
-        $this->pageTitle[] = 'редактирование';
         $this->User->bindModel(array(
             'hasOne' => array(
                 'UsersProfile'
@@ -206,24 +230,28 @@ class UsersController extends AppController {
         if (!$user) {
             throw new NotFoundException();
         }
+        $this->pageTitle[] = 'редактирование профиля';
         if (!empty($this->request->data)) {
+            if (empty($this->request->data['User']['password'])) {
+                $this->request->data['User']['password'] = $user['User']['password'];
+            }
             $this->FormProfileEdit->set(array_merge(
                 $this->request->data['User'],
                 $this->request->data['UsersProfile']
             ));
             if ($this->FormProfileEdit->validates()) {
+                $this->request->data['User']['id'] = $user['User']['id'];
                 $this->request->data['UsersProfile']['user_id'] = $user['User']['id'];
-
                 $this->User->save(
                     $this->request->data['User'],
                     false,
-                    array('password')
+                    array('id', 'login', 'password')
                 );
-                $this->Session->write('User.password', $this->request->data['User']['password']);
+                $this->Session->write('User.login', $this->request->data['User']['login']);
                 $this->UsersProfile->save(
                     $this->request->data['UsersProfile'],
                     false,
-                    array('user_id', 'first_name', 'last_name', 'email', 'nickname', 'sex', 'birthday', 'location', 'gravatar')
+                    array('user_id', 'email', 'nickname', 'sex', 'location')
                 );
                 $this->redirect($this->request->here);
             } else {
@@ -232,29 +260,28 @@ class UsersController extends AppController {
             }
         } else {
             $this->request->data = $user;
+            $this->request->data['User']['password'] = '';
         }
-        $this->set('gravatarKey', $user['UsersProfile'] ? $user['UsersProfile']['gravatar'] : '');
     }
 
-    public function newgravatar() {
-        $this->layout = 'json';
-        $result = array(
-            'status' => 'error',
-        );
-        if ($this->request->is('ajax')) {
-            if ($this->curUser['group_id'] > Group::GUEST) {
-                $gravatarKey = substr(String::uuid(), 0, 8);
-                if ($this->UsersProfile->save(array(
-                    'user_id' => $this->curUser['id'],
-                    'gravatar' => $gravatarKey,
-                ))) {
-                    $result['status'] = 'ok';
-                    $result['key'] = $gravatarKey;
-                    $result['md5key'] = md5($gravatarKey);
-                }
+    public function set_login() {
+        $this->pageTitle[] = 'Выбор логина';
+
+        if (!empty($this->request->data)) {
+            $this->FormUserRegister->set($this->request->data);
+            $this->FormUserRegister->validate['password'] = false;
+            $this->FormUserRegister->validate['password2'] = false;
+            if ($this->FormUserRegister->validates()) {
+                $user = array(
+                    'id' => $this->curUser['id'],
+                    'login' => $this->request->data['FormUserRegister']['login'],
+                    'group_id' => UsersGroup::EXTERNAL,
+                );
+                $this->User->save($user, false);
+                $this->Session->write('User', $user);
+                $this->UsersGroup->id = $user['group_id'];
+                $this->redirect($this->UsersGroup->field('home_page'));
             }
         }
-        $this->set('result', $result);
-        $this->render('../empty');
     }
 }

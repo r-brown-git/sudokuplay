@@ -3,6 +3,7 @@
         'format' => array('input', 'error'),
     ),
 ))?>
+<?=$this->element('external_auth')?>
 <table class="login-table">
     <tr>
         <td class="register-table"><label>Логин</label></td>

@@ -14,6 +14,10 @@ class FormUserRegister extends AppModel {
                 'rule'    => array('between', 4, 15),
                 'message' => 'Логин должен быть от 4 до 15 символов',
             ),
+            'alphaNumeric' => array(
+                'rule' => 'alphaNumeric',
+                'message' => 'Допустимы только буквы и цифры',
+            ),
         ),
         'password' => array(
             'rule' => array('minLength', 3),

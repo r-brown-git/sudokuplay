@@ -7,19 +7,19 @@
                     <div class="cp">
                         <div class="column-number col1">
                             <div class="mini-counts">
-                                <span title="0 votes">0</span>
+                                <span title="0 votes">48%</span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col2">
                             <div class="mini-counts">
-                                <span title="0 votes">0</span>
+                                <span title="0 votes">3</span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col3">
                             <div class="mini-counts">
-                                <span title="0 votes">0</span>
+                                <span title="0 votes">1,7</span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
@@ -39,7 +39,7 @@
                         </div>
                         <div class="started">
                             <a class="started-link" href="/">
-                                <?=$this->DateTime->formatGameList($aGame['Game']['game_start'])?>
+                                <?=$this->DateTime->formatGameList($aGame['Game']['game_begin'])?>
                             </a>
                         </div>
                     </div>

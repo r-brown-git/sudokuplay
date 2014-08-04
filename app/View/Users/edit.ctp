@@ -3,16 +3,14 @@
         <div class="gravatar">
             <a href="/users/profile">
                 <div class="gravatar-wrapper-128">
-                    <? $src = 'http://www.gravatar.com/avatar/' . ($gravatarKey ? md5($gravatarKey) . '/?s=128&d=wavatar' : '?s=128&d=mm'); ?>
-                    <img class="logo" alt="" src="<?=$src?>">
+                    <img class="logo" alt="" src="/uploads/avatar/mm128.png">
                 </div>
             </a>
-            <p class="change-picture-block">
+            <!--<p class="change-picture-block">
                 <a id="change-picture">изменить аватар</a>
-            </p>
+            </p>-->
         </div>
         <div class="data">
-            <h3><?=htmlspecialchars($cur_user['login'])?></h3>
             <?=$this->Form->create('Profile', array(
                 'id' => 'profile-edit-form',
                 'inputDefaults' => array(
@@ -21,18 +19,26 @@
                     'format' => array('before', 'label', 'input', 'after', 'error'),
                 ),
             ));?>
+            <?=$this->Form->input('User.login', array(
+                'type' => 'text',
+                'label' => 'Логин',
+                'class' => 'textbox',
+            ));?>
             <?=$this->Form->input('UsersProfile.email', array(
                 'type' => 'email',
                 'label' => 'E-mail',
+                'class' => 'textbox',
             ));?>
             <?=$this->Form->input('User.password', array(
                 'type' => 'password',
                 'label' => 'Пароль',
-                //'placeholder' => '(без изменений)',
+                'placeholder' => '(без изменений)',
+                'class' => 'textbox',
             ));?>
             <?=$this->Form->input('UsersProfile.location', array(
                 'type' => 'text',
-                'label' => 'Откуда'
+                'label' => 'Откуда',
+                'class' => 'textbox',
             ));?>
             <div class="input select">
                 <?=$this->Form->label('UsersProfile.sex', 'Пол');?>
@@ -42,31 +48,6 @@
                 );?>
                 <div class="clear"></div>
             </div>
-            <?/*=$this->Form->input('UsersProfile.first_name', array(
-                'type' => 'text',
-                'label' => 'Имя'
-            ));?>
-            <?=$this->Form->input('UsersProfile.last_name', array(
-                'type' => 'text',
-                'label' => 'Фамилия'
-            ));?>
-            <?=$this->Form->input('UsersProfile.show_name', array(
-                'type' => 'checkbox',
-                'label' => 'Показывать имя, фамилию',
-            ));?>
-            <?=$this->Form->input('UsersProfile.birthday', array(
-                'type' => 'text',
-                'label' => 'Дата рождения',
-            ));?>
-            <?=$this->Form->input('UsersProfile.show_birthday', array(
-                'type' => 'checkbox',
-                'label' => 'Показывать дату рождения',
-            ));*/?>
-            <?=$this->Form->input('UsersProfile.gravatar', array(
-                'type' => 'text',
-                'label' => 'Ключ аватара',
-                'id' => 'input-gravatar',
-            ));?>
             <?=$this->Form->submit('Сохранить', array());?>
             <?=$this->Form->end();?>
         </div>
@@ -74,6 +55,6 @@
 </div>
 <script type="text/javascript">
     $(function() {
-        sp.profileEdit();
+        sudokuplay.usersEdit();
     });
 </script>

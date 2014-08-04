@@ -1,11 +1,21 @@
 @CHARSET "UTF-8";
 
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 body {
-	margin: 0; 
-	padding: 0;
 	font-family: Arial,Liberation Sans,DejaVu Sans,sans-serif;
 	font-size: 80%;
 	line-height: 1;
+}
+.body-wrapper {
+    min-height: 100%;
+    margin-bottom: -47px;
+}
+* html .body-wrapper {
+    height: 100%;
 }
 
 table {	border-collapse: collapse; } /* cellspacing="0" */
@@ -43,9 +53,10 @@ a:hover { text-decoration: underline; }
 a:visited { color:#4A6B82; }
 
 input { padding: 3px; }
-/*input.textbox, textarea, input.password, input.button {
+input.textbox, textarea.textbox {
 	border: 1px solid #C0C0C0;
-}*/
+    width: 136px;
+}
 /*input[type="button"], input[type="reset"], input[type="file"], input[type="submit"] {
     background-color: #EFEFEF;
     font-weight: bold;
@@ -55,16 +66,21 @@ ol, ul {
     list-style: none outside none;
 }
 
+hr {
+    background-color: #aaa;
+    border: 0 none;
+    color: #aaa;
+    height: 1px;
+    margin-bottom: 20px;
+}
+
 .module {
     color: #444444;
     margin-bottom: 10px;
     padding: 0 8px 2px;
 }
-    .module h4 {
-        font-size: 130%;
-        line-height: 1.4;
-        padding-bottom: 7px;
-    }
+
+.cbt { clear: both; }
 
 #custom-header {
     background-color: #EEEEEE;
@@ -105,8 +121,7 @@ ol, ul {
 		#header #topbar #hsearch {
     		float: left;
 		}
-	
-	#header .cbt { clear: both; }
+
 		
 	#header #hlogo {
 	    float: left;
@@ -183,50 +198,7 @@ ol, ul {
 			    font-size: 18px;
 			    margin: 12px 0 0;
 			}*/
-			
-			#tabs {
- 				float: right;
-			    font-weight: normal;
-			}
-				#tabs a {
-				    border: 1px solid #FFFFFF;
-				    color: #777777;
-				    display: block;
-				    float: left;
-				    font-size: 90%;
-				    height: 24px;
-				    line-height: 22px;
-				    margin: 8px 8px 0 0;
-				    padding: 0 11px;
-				    text-decoration: none;
-				}
-				#tabs a:hover {
-				    border-color: #CCCCCC #CCCCCC #FFFFFF;
-				    border-style: solid;
-				    border-width: 1px;
-				    line-height: 20px;
-				    margin-top: 9px;
-				}
-				#tabs a.youarehere {
-				    border-color: #CCCCCC #CCCCCC #FFFFFF;
-				    border-style: solid;
-				    border-width: 1px;
-				    color: black;
-				    font-size: 120%;
-				    height: 30px;
-				    line-height: 28px;
-				    margin-top: 3px;
-				    padding: 0 11px;
-				}
-					#tabs a .bounty {
-    					background-color: #0077DD;
-					    border-radius: 3px 3px 3px 3px;
-					    color: #FFFFFF !important;
-					    font-size: 90%;
-					    font-weight: bold;
-					    margin-right: 5px;
-					    padding: 1px 4px;
-					}
+
 	#sidebar {
 	    float: right;
 	    margin-bottom: 60px;
@@ -239,8 +211,9 @@ ol, ul {
     border-top: 1px solid #CCCCCC;
     clear: both;
     color: #444444;
-    margin-top: 30px;
-    padding: 15px;
+    /*margin-top: 30px;*/
+    padding: 15px 0;
+    width: 100%;
 }
 
 div.form input[type='password'],
@@ -329,36 +302,6 @@ div.form input[type='text'] {
 .login-table td {
     vertical-align: top;
 }
-.login-table
-/*.login-error {
-    margin: 0 15px 0;
-    width: 390px;
-    color: #75845C;
-    font-weight: bold;
-    text-align: center;
-}*/
-/* end */
-
-.record {
-    line-height: 120%;
-}
-.record-spacer {
-    height: 5px;
-}
-.record-box {
-    float: left;
-    background-color: #EEEEEE;
-    color: #75845C;
-    font-size: 10px;
-    font-weight: normal;
-    margin-right: 5px;
-    width: 30px;
-    height: 15px;
-    padding: 0 1px 0 1px;
-    text-align: center;
-    vertical-align: middle;
-    text-decoration: none;
-}
 
 .icon {
     position: relative;
@@ -378,7 +321,7 @@ div.form input[type='text'] {
     width: 32px;
     height: 32px;
     text-align: center;
-    font: 10pt Verdana,Arial,Helvetica,sans-serif;
+    font: 14px Verdana,Arial,Helvetica,sans-serif;
     font-weight: bold;
 }
 
@@ -388,20 +331,30 @@ div.form input[type='text'] {
 .game table td.darkquad {
     background-color:#F2F3FF;
 }
+.game table td.hover {
+    background-color:#dfdfdf; /* если эти правила идут ниже lightquad darkquad !important не нужен */
+}
+.game table td.wrong {
+    background-color:#FFA0A0;
+}
+.game table td.selected {
+    background-color:#FFFF7F;
+}
+
+.game table td.found {
+    color: #4040ff;
+}
+.game table td.given {
+    color: #454545;
+}
+.game table td.empty {
+}
+
 
 .game table td.top {border-top:#909090 2px solid;}
 .game table td.left {border-left:#909090 2px solid;}
 .game table td.right {border-right:#909090 2px solid;}
 .game table td.bottom {border-bottom:#909090 2px solid;}
-
-.found {
-    color: #4040ff;
-}
-.given {
-    color: #454545;
-}
-.empty {
-}
 
 .controls {
     float: left;
@@ -423,11 +376,11 @@ div.form input[type='text'] {
     width: 40px;
 }
 
-.chat {
+.game-left-block {
     width: 200px;
     float: left;
     margin: 20px 0 0 0;
-    border: 1px solid #C0C0C0;
+    /*border: 1px solid #C0C0C0;*/
 }
 
 .auth-icons a {
@@ -443,7 +396,67 @@ div.form input[type='text'] {
 .subheader h1,
 .subheader h2 {
     float: left;
-    font-size: 18px;
-    line-height: 34px;
+    font-size: 125%;
+    font-family: Arial,Liberation Sans,DejaVu Sans,sans-serif;
     margin-bottom: 0;
+    margin-top: 14px;
 }
+.subheader .last {
+    color: #444444;
+}
+.subheader .delimiter {
+    color: #cccccc;
+}
+
+.deny-select {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+#search .textbox {
+    height: 16px;
+}
+
+/* tabs */
+ul.tabs {
+    float: right;
+    height: 26px;
+    padding: 0 15px;
+    line-height: 14px;
+    list-style-type: none;
+    margin-top: 8px;
+    display: block;
+}
+
+ul.tabs li {
+    display: inline;
+    text-align: -webkit-match-parent;
+}
+
+ul.tabs li a {
+    float: left;
+    height: 25px;
+    line-height: 25px;
+    padding: 0 10px;
+    border: 1px solid #CCCCCC;
+    margin-right: 3px;
+    margin-bottom: -1px;
+}
+ul.tabs li a.youarehere {
+    background-color: #fff;
+    border-bottom-color: #fff;
+}
+ul.tabs .bounty {
+    background-color: #0077DD;
+    border-radius: 3px 3px 3px 3px;
+    color: #FFFFFF !important;
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 5px;
+    padding: 1px 4px;
+}
+/* end */
