@@ -1,9 +1,9 @@
 <div id="user-info-container">
     <div class="user-header-left">
-        <div class="gravatar">
+        <div class="avatar">
             <a href="/users/profile">
-                <div class="gravatar-wrapper-128">
-                    <img class="logo" alt="" src="/uploads/avatar/mm128.png">
+                <div class="avatar-wrapper-100">
+                    <img class="logo" alt="" src="/uploads/avatar/mm100.png">
                 </div>
             </a>
             <!--<p class="change-picture-block">

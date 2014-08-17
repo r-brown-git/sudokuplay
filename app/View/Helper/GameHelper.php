@@ -49,4 +49,17 @@ class GameHelper extends AppHelper {
         }
         return $result;
     }
+
+    public function ruGamesPreposionPluralize($count) {
+        $mod = $count % 10;
+        $div = floor($count / 10);
+        if ($div == 1) {
+            $result = 'игре';
+        } else if ($mod == 1) {
+            $result = 'игре';
+        } else {
+            $result = 'играх';
+        }
+        return $count . ' ' . $result;
+    }
 }

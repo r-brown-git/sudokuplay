@@ -58,6 +58,8 @@ class AppController extends Controller {
 
     public $pageTitle = array();
 
+    public $tabs = array();
+
     /**
      * Данные авторизованного пользователя
      * @var array
@@ -84,8 +86,19 @@ class AppController extends Controller {
         $this->set('usid', $this->curUser['id'] != 0 ? $this->Cookie->read('usid') : null); // для запросов к сокету node.js
         $this->set('last_chat_messages', $this->ChatMessage->getLastChatMessages());
 
-        $this->set('count_online_users', $this->UsersSession->getOnlineUsersCount());
-        $this->set('count_active_games', $this->Game->getActiveGamesCount());
+        $countOnlineUsers = $this->UsersSession->getOnlineUsersCount();
+        $this->set('count_online_users', $countOnlineUsers);
+
+        $countCurrentGames = $this->Game->getCurrentGamesCount();
+        $this->set('count_current_games', $countCurrentGames);
+
+        if (isset($this->tabs['games.current'])) {
+            $this->tabs['games.current']['bounty'] = $countCurrentGames;
+        }
+        if (isset($this->tabs['users.online'])) {
+            $this->tabs['users.online']['bounty'] = $countOnlineUsers;
+        }
+        $this->set('tabs', $this->tabs);
 
     }
 

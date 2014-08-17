@@ -49,9 +49,9 @@ class DateTimeHelper extends AppHelper {
         '12' => 'декабря',
     );
 
-    static private function _ruDatePluralize($count, $unit) {
+    public function ruDatePluralize($count, $unit) {
         $mod = $count % 10;
-        $div = intval($count / 10);
+        $div = floor($count / 10);
         $units = array(
             'y' => array('лет', 'года', 'год'),
             'm' => array('месяцев', 'месяца', 'месяц'),
@@ -102,13 +102,13 @@ class DateTimeHelper extends AppHelper {
         $interval = $now->diff($from);
         $result = '';
         if ($interval->y > 1) {
-            $result .= self::_ruDatePluralize($interval->y, 'y') . ', ';
+            $result .= $this->ruDatePluralize($interval->y, 'y') . ', ';
         }
         if ($interval->m > 1) {
-            $result .= self::_ruDatePluralize($interval->m, 'm') . ', ';
+            $result .= $this->ruDatePluralize($interval->m, 'm') . ', ';
         }
         if ($interval->d > 1) {
-            $result .= self::_ruDatePluralize($interval->d, 'd');
+            $result .= $this->ruDatePluralize($interval->d, 'd');
         }
 
         return $result;

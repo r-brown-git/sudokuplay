@@ -1,7 +1,7 @@
 <?php
 class Game extends AppModel {
 
-    public function getActiveGamesCount() {
+    public function getCurrentGamesCount() {
         return $this->find('count', array(
             'conditions' => array(
                 'OR' => array(

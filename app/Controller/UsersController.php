@@ -28,13 +28,39 @@ class UsersController extends AppController {
         'ok',
     ];
 
-    public $pageTitle = ['/users' => 'пользователи'];
+    public $pageTitle = ['/users' => 'Участники'];
+
+    public $tabs = [
+        'users.all' => [
+            'title' => 'Все',
+            'href' => [
+                'controller' => 'users',
+                'action' => 'index',
+            ],
+            'bounty' => false
+        ],
+        'users.online' => [
+            'title' => 'Онлайн',
+            'href' => [
+                'controller' => 'users',
+                'action' => 'index',
+                'online',
+            ],
+            'bounty' => false
+        ],
+    ];
 
     public function beforeFilter() {
         parent::beforeFilter();
         if ($this->curUser['group_id'] == UsersGroup::GUEST) {
-            $this->Auth->deny(array('show', 'edit'));
-        }
+            $this->Auth->deny(array('show', 'edit')); // запрещаем экшены
+        } /*else if ($this->curUser['group_id'] == UsersGroup::EXTERNAL_REG) {
+            if (!in_array($this->action, array('set_login', 'logout'))) { // разрешаем только эти экшены
+                $this->redirect(array('controller' => 'users', 'action' => 'set_login'));
+            }
+        } else if ($this->curUser['group_id'] != UsersGroup::EXTERNAL_REG) {
+            $this->Auth->deny(array('set_login'));
+        }*/
     }
 
     public function index($param = '') {
@@ -42,13 +68,22 @@ class UsersController extends AppController {
             'hasOne' => array(
                 'UsersProfile',
                 'UsersSession',
+                'GamesUser',
             ),
-        ));
+        ), false);
+        $this->Paginator->settings['fields'] = array(
+            'User.*',
+            'UsersProfile.*',
+            'UsersSession.*',
+            'COUNT(GamesUser.game_id) as gamesCount',
+            'IF(USER.registered, DATEDIFF(NOW(), User.registered), 0) AS daysCount',
+        );
         $this->Paginator->settings['limit'] = 15;
         $this->Paginator->settings['order'] = array(
             'User.points' => 'DESC',
             'User.registered' => 'DESC',
         );
+        $this->Paginator->settings['group'] = array('User.id');
         $conditions = array();
         if ($param == 'online') {
             $conditions['UsersSession.last_connect >='] = date(DATE_SQL, strtotime(UsersSession::ONLINE_DELAY));
@@ -127,7 +162,7 @@ class UsersController extends AppController {
                     $this->User->save(array(
                         'id' => 0,
                         'password' => substr(String::uuid(), 0, 8),
-                        'group_id' => UsersGroup::EXTERNAL_REG,
+                        'group_id' => UsersGroup::EXTERNAL,
                         'points' => User::START_POINTS,
                         'registered' => date(DATE_SQL),
                     ));
@@ -178,7 +213,9 @@ class UsersController extends AppController {
                 ));
                 $this->User->save();
                 $userId = $this->User->getLastInsertId();
-                $this->Session->write('User', $this->User->findById($userId)['User']);
+                $user = $this->User->findById($userId);
+                $this->Session->write('User', $user['User']);
+
                 $this->UsersCookie->createUsid($userId);
                 $this->redirect($this->Auth->redirect());
             }
@@ -264,24 +301,25 @@ class UsersController extends AppController {
         }
     }
 
-    public function set_login() {
+    /*public function set_login() {
         $this->pageTitle[] = 'Выбор логина';
-
         if (!empty($this->request->data)) {
             $this->FormUserRegister->set($this->request->data);
             $this->FormUserRegister->validate['password'] = false;
             $this->FormUserRegister->validate['password2'] = false;
             if ($this->FormUserRegister->validates()) {
-                $user = array(
+                $this->User->save(array(
                     'id' => $this->curUser['id'],
                     'login' => $this->request->data['FormUserRegister']['login'],
                     'group_id' => UsersGroup::EXTERNAL,
-                );
-                $this->User->save($user, false);
-                $this->Session->write('User', $user);
-                $this->UsersGroup->id = $user['group_id'];
+                ), false);
+                $user = $this->User->findById($this->curUser['id']);
+                $this->Session->write('User', $user['User']);
+                $this->ForumMember->addMember($user['User']);
+
+                $this->UsersGroup->id = $user['User']['group_id'];
                 $this->redirect($this->UsersGroup->field('home_page'));
             }
         }
-    }
+    }*/
 }

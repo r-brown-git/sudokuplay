@@ -150,7 +150,7 @@ hr {
 		#header #hmenus .nav {
     		float: left;
     		font-size: 125%;
-    		margin-left: 50px;
+    		margin-left: 100px;
 		}
 			.nav ul {
 				margin: 0; 
@@ -424,7 +424,7 @@ div.form input[type='text'] {
 /* tabs */
 ul.tabs {
     float: right;
-    height: 26px;
+    height: 14px;
     padding: 0 15px;
     line-height: 14px;
     list-style-type: none;
@@ -437,16 +437,16 @@ ul.tabs li {
     text-align: -webkit-match-parent;
 }
 
-ul.tabs li a {
+ul.tabs li .tab {
     float: left;
     height: 25px;
     line-height: 25px;
     padding: 0 10px;
     border: 1px solid #CCCCCC;
-    margin-right: 3px;
+    margin-right: 7px;
     margin-bottom: -1px;
 }
-ul.tabs li a.youarehere {
+ul.tabs li .tab.youarehere {
     background-color: #fff;
     border-bottom-color: #fff;
 }

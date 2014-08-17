@@ -45,7 +45,7 @@
         <a href="<?=$this->Html->url('/users/index/online')?>"><?=$count_online_users?></a>
         <a href="<?=$this->Html->url('/users/index/online')?>"><img src="/site/images/player_icon.png" class="icon"></a>
         &nbsp;&nbsp;
-        <a href="<?=$this->Html->url('/games')?>"><?=$count_active_games?></a>
+        <a href="<?=$this->Html->url('/games')?>"><?=$count_current_games?></a>
         <a href="<?=$this->Html->url('/games')?>"><img src="/site/images/sudoku_icon.png" class="icon"></a>
     </div>
     <div id="topbar">
@@ -86,6 +86,9 @@
                 <li class="youarehere">
                     <a href="<?=$this->Html->url('/users')?>" title="Участники">Участники</a>
                 </li>
+                <li>
+                    <a href="http://forum3.<?=str_replace('www.', '', env('HTTP_HOST'))?>/" title="Форум">Форум</a>
+                </li>
             </ul>
         </div>
     </div>
@@ -103,14 +106,7 @@
             ?>
             </h1>
 
-            <ul class="tabs">
-                <li>
-                    <a class="youarehere"><span class="bounty">5</span>Открытые</span></a>
-                </li>
-                <li>
-                    <a>Архив</a>
-                </li>
-            </ul>
+            <?=$this->element('tabs')?>
         </div>
 
         <div class="content">

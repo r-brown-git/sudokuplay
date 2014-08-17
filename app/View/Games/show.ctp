@@ -54,7 +54,7 @@
         <a href="#" id="my-points"><?=$points?></a>
     </div>
     <div class="mistakes">
-        1 из 2
+        <span id="mistakes-count"><?=$mistakes?></span> из <span><?=$game['Game']['mistakes_max']?></span>
     </div>
     <div class="buttons">
         <input type="button" value="1">
@@ -72,9 +72,10 @@
 
 <script type="text/javascript">
     var myPoints = <?=$points?>;
+    var myMistakes = <?=$mistakes?>;
     var onlineUsers = <?=$online_users?>;
     $(function() {
-        sudokuplay.gamesShow(myPoints);
+        sudokuplay.gamesShow(myPoints, myMistakes);
         sudokuplay.renderOnlineUsers(onlineUsers);
         sudokuplay.marquee();
     });

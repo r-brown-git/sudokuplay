@@ -7,19 +7,19 @@
                     <div class="cp">
                         <div class="column-number col1">
                             <div class="mini-counts">
-                                <span title="0 votes">48%</span>
+                                <span title="0 votes"><?=count($aGame['GamesUser'])?></span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col2">
                             <div class="mini-counts">
-                                <span title="0 votes">3</span>
+                                <span title="0 votes"><?=number_format($aGame['Game']['ratio'], 2, ',', '&nbsp;')?></span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col3">
                             <div class="mini-counts">
-                                <span title="0 votes">1,7</span>
+                                <span title="0 votes"><?=number_format($aGame['Extra']['completed_state'], 0, ',', '&nbsp;')?>%</span>
                             </div>
                             <div>&nbsp;</div>
                         </div>

@@ -17,14 +17,20 @@ var client = {
                 } else if (msg.response == 'messageAdded') {
                     client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
                 } else if (msg.response == 'cellFound') { // кто-то кроме меня нашел ячейку
-                    client.cellFoundHandler(msg.cell, msg.value, msg.userId, msg.login, msg.reward);
+                    client.cellFoundHandler(msg.guess, msg.cell, msg.value, msg.userId, msg.login, msg.reward);
                     if (msg.finish) {
                         client.gameFinishHandler(msg.login);
+                    }
+                    if (msg.ban) {
+                        client.gameBanHandler(msg.login);
                     }
                 } else if (msg.response == 'cellChecked') { // ответ на мой запрос значения ячейки
                     client.cellCheckedHandler(msg.guess, msg.cell, msg.value, msg.reward);
                     if (msg.finish) {
                         client.gameFinishHandler(null);
+                    }
+                    if (msg.ban) {
+                        client.gameBanHandler(null);
                     }
                 } else if (msg.response == 'playerEntered' && gameId == msg.gameId) { // только для тех, кто в этой игре
                     client.playerEnteredHandler(msg.userId, msg.login, msg.gamePoints);
@@ -98,6 +104,7 @@ var client = {
             setTimeout(function() {
                 $('#c' + cell).removeClass('wrong');
             }, 1000);
+            $('#mistakes-count').text(++sudokuplay.myMistakes);
         }
         if (guess == 'right' || guess == 'alreadyFound') {
             $('#c' + cell).removeClass('empty').addClass('found');
@@ -128,15 +135,29 @@ var client = {
             message = login + ' завершил';
         }
         message += ' игру';
-        sudokuplay.addToMarquee(message)
+        sudokuplay.addToMarquee(message);
     },
 
-    cellFoundHandler: function(cell, value, userId, login, reward) {
-        $('#c' + cell).removeClass('selected');
-        sudokuplay.selected = -1;
-        client.showReward(login, reward);
-        $('#c' + cell).removeClass('empty').addClass('found');
-        $('#c' + cell).text(value);
+    gameBanHandler: function(login) {
+        var message;
+        if (!login) {
+            message = 'Вы забанены';
+            $('.game td').unbind('click');
+        } else {
+            message = login + ' забанен';
+        }
+        message += ' в этой игре';
+        sudokuplay.addToMarquee(message);
+    },
+
+    cellFoundHandler: function(guess, cell, value, userId, login, reward) {
+        if (guess == 'right') {
+            $('#c' + cell).removeClass('selected');
+            sudokuplay.selected = -1;
+            client.showReward(login, reward);
+            $('#c' + cell).removeClass('empty').addClass('found');
+            $('#c' + cell).text(value);
+        }
         var i, n = onlineUsers.length,
             needRefresh = false;
         for (i = 0; i < n; i++) {

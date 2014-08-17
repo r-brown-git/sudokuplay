@@ -9,11 +9,23 @@ var sudokuplay = {
     usersEdit: function() {
     },
 
+    usersIndex: function() {
+        $('.page-numbers').css('cursor', 'pointer');
+        $('.page-numbers').click(function() {
+            var a = $(this).find('a');
+            if (a.length) {
+                document.location.href = a.attr('href');
+            }
+        });
+    },
+
     selected: -1, // значение выбранной ячейки (нужно также в client.js)
     myPoints: 0, // общая сумма баллов
+    myMistakes: 0, // количество ошибок, допущенных в этой игре
 
-    gamesShow: function(myPoints) {
+    gamesShow: function(myPoints, myMistakes) {
         sudokuplay.myPoints = myPoints;
+        sudokuplay.myMistakes = myMistakes;
         $('#my-points').text(myPoints);
 
         $('.game td').mouseover(function() {
@@ -69,7 +81,6 @@ var sudokuplay = {
         var span = $('.invisible-span').html($('.inner-marquee').html()).css({'display':'none'});
         var move = parseInt(span.css('width')) - parseInt($('.outer-marquee').css('width'));
         if (move > 0) {
-            move += 24;
             var doMove = function() {
                 $('.inner-marquee').animate({
                     marginLeft: -1 * move + 'px',
@@ -84,7 +95,7 @@ var sudokuplay = {
                 });
             }
             var froze = false;
-            $('.marquee').mouseenter(function() {
+            $('.marquee').on('mouseenter', function() {
                 if (!froze) {
                     froze = true;
                     doMove();

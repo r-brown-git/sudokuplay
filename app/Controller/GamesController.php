@@ -9,13 +9,36 @@ class GamesController extends AppController {
         'GamesUser',
     );
 
-    public $pageTitle = ['/games' => 'игры'];
+    public $pageTitle = ['/games' => 'Игры'];
+
+    public $tabs = [
+        'games.current' => [
+            'title' => 'Текущие',
+            'href' => [
+                'controller' => 'games',
+                'action' => 'index',
+            ],
+            'bounty' => false
+        ],
+        'games.archive' => [
+            'title' => 'Архив',
+            'href' => [
+                'controller' => 'games',
+                'action' => 'index',
+                'archive',
+            ],
+            'bounty' => false
+        ],
+    ];
 
     public function beforeFilter() {
         parent::beforeFilter();
         if ($this->curUser['group_id'] == UsersGroup::GUEST) {
             $this->Auth->deny('show');
-        }
+        } /*else if ($this->curUser['group_id'] == UsersGroup::EXTERNAL_REG) {
+            $this->redirect(array('controller' => 'users', 'action' => 'set_login'));
+        }*/
+
     }
 
     /**
@@ -28,7 +51,12 @@ class GamesController extends AppController {
                 'GamesTag' => array(
                     'className' => 'GamesTag',
                     'foreignKey' => 'game_id',
-                )
+                ),
+                'GamesUser' => array(
+                    'className' => 'GamesUser',
+                    'foreignKey' => 'game_id',
+                    'conditions' => array('GamesUser.active' => true),
+                ),
             ),
         ));
         $games = $this->Game->find('all', array(
@@ -39,9 +67,13 @@ class GamesController extends AppController {
                         array('Game.game_begin <=' => date(DATE_SQL)),
                         array('Game.game_end' => '0000-00-00 00:00:00'),
                     ),
-                )
+                ),
             ),
         ));
+
+        foreach ($games as $n => $aGame) {
+            $games[$n]['Extra']['completed_state'] = $aGame['Game']['pos_unknown'] ? round( 100 * count($this->_getFoundCells($aGame['Game']['id'])) / (strlen($aGame['Game']['pos_unknown']) / 2), 2) : 100;
+        }
 
         $this->set('games', $games);
     }
@@ -91,6 +123,7 @@ class GamesController extends AppController {
                 'mistakes' => 0,
                 'points' => 0,
                 'active' => true,
+                'banned' => false,
             ));
         } else {
             $this->GamesUser->save(array(
@@ -98,9 +131,13 @@ class GamesController extends AppController {
                 'last_connect' => date(DATE_SQL),
                 'active' => true,
             ));
+            if ($gameUser['GamesUser']['banned']) {
+                throw new ForbiddenException();
+            }
         }
 
         $this->set('points', $this->User->findById($this->curUser['id'])['User']['points']);
+        $this->set('mistakes', $gameUser ? $gameUser['GamesUser']['mistakes'] : 0);
         $this->set('game', $game);
         $this->set('found', $this->_getFoundCells($gameId));
         $this->set('online_users', $this->GamesUser->getOnlineUsers($gameId));
