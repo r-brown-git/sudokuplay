@@ -54,13 +54,7 @@ class UsersController extends AppController {
         parent::beforeFilter();
         if ($this->curUser['group_id'] == UsersGroup::GUEST) {
             $this->Auth->deny(array('show', 'edit')); // запрещаем экшены
-        } /*else if ($this->curUser['group_id'] == UsersGroup::EXTERNAL_REG) {
-            if (!in_array($this->action, array('set_login', 'logout'))) { // разрешаем только эти экшены
-                $this->redirect(array('controller' => 'users', 'action' => 'set_login'));
-            }
-        } else if ($this->curUser['group_id'] != UsersGroup::EXTERNAL_REG) {
-            $this->Auth->deny(array('set_login'));
-        }*/
+        }
     }
 
     public function index($param = '') {
@@ -162,7 +156,7 @@ class UsersController extends AppController {
                     $this->User->save(array(
                         'id' => 0,
                         'password' => substr(String::uuid(), 0, 8),
-                        'group_id' => UsersGroup::EXTERNAL,
+                        'group_id' => UsersGroup::EXTERNAL_REG,
                         'points' => User::START_POINTS,
                         'registered' => date(DATE_SQL),
                     ));
@@ -301,7 +295,7 @@ class UsersController extends AppController {
         }
     }
 
-    /*public function set_login() {
+    public function set_login() {
         $this->pageTitle[] = 'Выбор логина';
         if (!empty($this->request->data)) {
             $this->FormUserRegister->set($this->request->data);
@@ -315,11 +309,10 @@ class UsersController extends AppController {
                 ), false);
                 $user = $this->User->findById($this->curUser['id']);
                 $this->Session->write('User', $user['User']);
-                $this->ForumMember->addMember($user['User']);
 
                 $this->UsersGroup->id = $user['User']['group_id'];
                 $this->redirect($this->UsersGroup->field('home_page'));
             }
         }
-    }*/
+    }
 }

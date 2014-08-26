@@ -7,28 +7,27 @@
                     <div class="cp">
                         <div class="column-number col1">
                             <div class="mini-counts">
-                                <span title="0 votes"><?=count($aGame['GamesUser'])?></span>
+                                <span title="участников в игре"><?=count($aGame['GamesUser'])?></span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col2">
                             <div class="mini-counts">
-                                <span title="0 votes"><?=number_format($aGame['Game']['ratio'], 2, ',', '&nbsp;')?></span>
+                                <span title="множитель баллов"><?=number_format($aGame['Game']['ratio'], 2, ',', '&nbsp;')?></span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                         <div class="column-number col3">
                             <div class="mini-counts">
-                                <span title="0 votes"><?=number_format($aGame['Extra']['completed_state'], 0, ',', '&nbsp;')?>%</span>
+                                <span title="отгадано ячеек"><?=number_format($aGame['Extra']['completed_state'], 0, ',', '&nbsp;')?>%</span>
                             </div>
                             <div>&nbsp;</div>
                         </div>
                     </div>
                     <div class="summary">
                         <h3>
-                            <a class="question-hyperlink" href="<?=$this->Html->url('/games/'.$aGame['Game']['id'])?>">
-                                <?=htmlspecialchars($aGame['Game']['title'])?>
-                            </a>
+                            <?=htmlspecialchars($aGame['Game']['title'])?>
+                            <a href="<?=$this->Html->url('/games/'.$aGame['Game']['id'])?>">[Вход]</a>
                         </h3>
                         <div class="tags">
                             <? foreach($aGame['GamesTag'] as $aTag) {

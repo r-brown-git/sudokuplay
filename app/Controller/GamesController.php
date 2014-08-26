@@ -13,14 +13,14 @@ class GamesController extends AppController {
 
     public $tabs = [
         'games.current' => [
-            'title' => 'Текущие',
+            'title' => 'Открытые',
             'href' => [
                 'controller' => 'games',
                 'action' => 'index',
             ],
             'bounty' => false
         ],
-        'games.archive' => [
+        /*'games.archive' => [
             'title' => 'Архив',
             'href' => [
                 'controller' => 'games',
@@ -28,17 +28,14 @@ class GamesController extends AppController {
                 'archive',
             ],
             'bounty' => false
-        ],
+        ],*/
     ];
 
     public function beforeFilter() {
         parent::beforeFilter();
         if ($this->curUser['group_id'] == UsersGroup::GUEST) {
             $this->Auth->deny('show');
-        } /*else if ($this->curUser['group_id'] == UsersGroup::EXTERNAL_REG) {
-            $this->redirect(array('controller' => 'users', 'action' => 'set_login'));
-        }*/
-
+        }
     }
 
     /**
@@ -69,6 +66,7 @@ class GamesController extends AppController {
                     ),
                 ),
             ),
+            'order' => array('Game.game_begin ASC'),
         ));
 
         foreach ($games as $n => $aGame) {
@@ -140,7 +138,7 @@ class GamesController extends AppController {
         $this->set('mistakes', $gameUser ? $gameUser['GamesUser']['mistakes'] : 0);
         $this->set('game', $game);
         $this->set('found', $this->_getFoundCells($gameId));
-        $this->set('online_users', $this->GamesUser->getOnlineUsers($gameId));
+        $this->set('online_users', $this->GamesUser->getOnlineUsersForGame($gameId));
     }
 
     /**

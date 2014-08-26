@@ -8,7 +8,7 @@ class GamesUser extends AppModel {
      * @param $gameId
      * @return json
      */
-    public function getOnlineUsers($gameId) {
+    public function getOnlineUsersForGame($gameId) {
         $this->bindModel(array(
             'belongsTo' => array(
                 'User',
@@ -35,6 +35,12 @@ class GamesUser extends AppModel {
         $result = json_encode($users);
 
         return $result;
+    }
+
+    public function getOnlinePayersCount() {
+        return $this->find('count', array('conditions' => array(
+            'GamesUser.active' => 1,
+        )));
     }
 
 }

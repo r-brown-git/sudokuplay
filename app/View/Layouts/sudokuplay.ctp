@@ -86,9 +86,6 @@
                 <li class="youarehere">
                     <a href="<?=$this->Html->url('/users')?>" title="Участники">Участники</a>
                 </li>
-                <li>
-                    <a href="http://forum3.<?=str_replace('www.', '', env('HTTP_HOST'))?>/" title="Форум">Форум</a>
-                </li>
             </ul>
         </div>
     </div>

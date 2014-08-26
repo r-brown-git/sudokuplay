@@ -5,6 +5,6 @@ class UsersGroup extends AppModel {
     const REGISTERED = 1;
     const EMAIL_CONFIRM = 2; // подтвердили email
     const EXTERNAL = 3; // вошли через соцсети, указали логин
-    // const EXTERNAL_REG = 4; // только что зарегистрировался через соцсеть, этой группе запрещено все, кроме смены логина и выхода
+    const EXTERNAL_REG = 4; // только что зарегистрировался через соцсеть
     const ADMIN = 7;
 }
