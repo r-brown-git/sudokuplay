@@ -5,7 +5,7 @@ App::uses('UsersSession', 'Model');
 App::uses('String', 'Utility');
 
 class UsersController extends AppController {
-    public $uses = [
+    public $uses = array(
         'User',
         'FormUserLogin',
         'FormUserRegister',
@@ -13,42 +13,42 @@ class UsersController extends AppController {
         'UsersExternal',
         'UsersProfile',
         'UsersGroup',
-    ];
+    );
 
-    public $components = [
+    public $components = array(
         'VkAuth',
         'GoogleAuth',
         'OkAuth',
         'Paginator',
-    ];
+    );
 
-    private $_authServices = [
+    private $_authServices = array(
         'vk',
         'google',
         'ok',
-    ];
+    );
 
-    public $pageTitle = ['/users' => 'Участники'];
+    public $pageTitle = array('/users' => 'Участники');
 
-    public $tabs = [
-        'users.all' => [
+    public $tabs = array(
+        'users.all' => array(
             'title' => 'Все',
-            'href' => [
+            'href' => array(
                 'controller' => 'users',
                 'action' => 'index',
-            ],
+            ),
             'bounty' => false
-        ],
-        'users.online' => [
+        ),
+        'users.online' => array(
             'title' => 'Онлайн',
-            'href' => [
+            'href' => array(
                 'controller' => 'users',
                 'action' => 'index',
                 'online',
-            ],
+            ),
             'bounty' => false
-        ],
-    ];
+        ),
+    );
 
     public function beforeFilter() {
         parent::beforeFilter();
@@ -98,13 +98,13 @@ class UsersController extends AppController {
             $this->Session->write('Auth', $service);
             $link = $this->{ucfirst($service) . 'Auth'}->getLink(); // получаем URL для сервиса
         } else {
-            $link = ['controller' => 'users', 'action' => 'login'];
+            $link = array('controller' => 'users', 'action' => 'login');
         }
         $this->redirect($link);
     }
 
     public function login() {
-        $this->pageTitle = ['Авторизация'];
+        $this->pageTitle = array('Авторизация');
 
         $authorized = false;
         if ($userId = $this->_checkExternalAuth()) {
@@ -191,7 +191,7 @@ class UsersController extends AppController {
     }
 
     public function register() {
-        $this->pageTitle = ['Регистрация'];
+        $this->pageTitle = array('Регистрация');
         if (!empty($this->data['FormUserRegister'])) {
             $this->FormUserRegister->set($this->data['FormUserRegister']);
             if ($this->data['FormUserRegister']['password'] != $this->data['FormUserRegister']['password2']) {

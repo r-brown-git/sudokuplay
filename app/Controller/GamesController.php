@@ -9,17 +9,17 @@ class GamesController extends AppController {
         'GamesUser',
     );
 
-    public $pageTitle = ['/games' => 'Игры'];
+    public $pageTitle = array('/games' => 'Игры');
 
-    public $tabs = [
-        'games.current' => [
+    public $tabs = array(
+        'games.current' => array(
             'title' => 'Открытые',
-            'href' => [
+            'href' => array(
                 'controller' => 'games',
                 'action' => 'index',
-            ],
+            ),
             'bounty' => false
-        ],
+        ),
         /*'games.archive' => [
             'title' => 'Архив',
             'href' => [
@@ -29,7 +29,7 @@ class GamesController extends AppController {
             ],
             'bounty' => false
         ],*/
-    ];
+    );
 
     public function beforeFilter() {
         parent::beforeFilter();

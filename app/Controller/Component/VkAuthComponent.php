@@ -64,14 +64,14 @@ class VkAuthComponent extends Component {
             if (isset($userInfo['response'][0]['uid'])) {
                 list($day, $month, $year) = explode('.', $userInfo['response'][0]['bdate']);
                 $birthday = date('Y-m-d', mktime(0, 0, 0, $month, $day, $year));
-                $result = [
+                $result = array(
                     'service_user_id' => $userInfo['response'][0]['uid'],
                     'first_name' => $userInfo['response'][0]['first_name'],
                     'last_name' => $userInfo['response'][0]['last_name'],
                     'nickname' => $userInfo['response'][0]['nickname'],
                     'sex' => $userInfo['response'][0]['sex'] == 2 ? 'M' : ($userInfo['response'][0]['sex'] == 1 ? 'F' : null),
                     'birthday' => $birthday,
-                ];
+                );
             }
         }
         return $result;
