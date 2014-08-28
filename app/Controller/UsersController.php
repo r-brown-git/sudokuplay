@@ -70,7 +70,7 @@ class UsersController extends AppController {
             'UsersProfile.*',
             'UsersSession.*',
             'COUNT(GamesUser.game_id) as gamesCount',
-            'IF(USER.registered, DATEDIFF(NOW(), User.registered), 0) AS daysCount',
+            'IF(User.registered, DATEDIFF(NOW(), User.registered), 0) AS daysCount',
         );
         $this->Paginator->settings['limit'] = 15;
         $this->Paginator->settings['order'] = array(
