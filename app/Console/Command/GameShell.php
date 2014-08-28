@@ -27,12 +27,13 @@ class GameShell extends AppShell {
     }
 
     /**
-     * Отключает игроков, которые не проявляли активность в течение 5 минут
+     * Отключает игроков, которые не проявляли активность в течение $args[0] минут
      */
     public function disconnectTimeout() {
+        $minutes = isset($args[0]) ? $args[0] : '10';
         $this->GamesUser->updateAll(
             array('GamesUser.active' => 0),
-            array('DATE_ADD(GamesUser.last_connect, INTERVAL 5 MINUTE) < NOW()')
+            array('DATE_ADD(GamesUser.last_connect, INTERVAL ' . $minutes . ' MINUTE) < NOW()')
         );
     }
 }
