@@ -83,6 +83,20 @@ class AppController extends Controller {
         }
         $this->curUser = $authData;
 
+        if ($authData['id']) {
+            $this->UsersSession->updateAll(
+                array(
+                    'ip' => '"' . env('REMOTE_ADDR') . '"',
+                    'user_agent' => '"' . env('HTTP_USER_AGENT') . '"',
+                    'last_auth' => '"' . date(DATE_SQL) . '"',
+                    'last_connect' => '"' . date(DATE_SQL) . '"',
+                ),
+                array(
+                    'user_id' => $authData['id'],
+                )
+            );
+        }
+
         $this->set('usid', $this->curUser['id'] != 0 ? $this->Cookie->read('usid') : null); // для запросов к сокету node.js
         $this->set('last_chat_messages', $this->ChatMessage->getLastChatMessages());
 

@@ -6,6 +6,7 @@
  */
 App::uses('HttpSocket', 'Network/Http');
 App::uses('Tag', 'Model');
+App::uses('Game', 'Model');
 
 /**
  * Class GameParserTask
@@ -13,9 +14,7 @@ App::uses('Tag', 'Model');
  */
 class GameParserTask extends Shell {
 
-    const GAME_START_AFTER = '+5 minutes';
-
-    const DEFAULT_COST = 10;
+    const DEFAULT_COST = 10; // предполагалось, что за найденную ячейку дается 10 баллов
     const SYM_CENTER = 1;
     const SYM_180 = 2;
     const LEVEL_HARD = 3;
@@ -42,8 +41,6 @@ class GameParserTask extends Shell {
 
         list($puzzleId, $allTable, $posUnknown) = $this->_getCells($symmetrical, $level, $ndigits);
 
-        $gameBegin = date(DATE_SQL, strtotime(self::GAME_START_AFTER));
-
         $ratioToLevel = array(
             0 => 0.7,
             1 => 0.95,
@@ -64,8 +61,6 @@ class GameParserTask extends Shell {
             default: $mistakesMax = 0;
         }
 
-        $mistakeCost = self::DEFAULT_COST * $ratio * 2; // цена ошибки пусть будет = 2 найденных ячейки
-
         $this->Game->create();
         $this->Game->save(array(
             'id' => 0,
@@ -73,11 +68,12 @@ class GameParserTask extends Shell {
             'all_table' => $allTable,
             'pos_unknown' => $posUnknown,
             'ratio' => $ratio,
-            'mistake_cost' => $mistakeCost,
+            'mistake_cost' => self::DEFAULT_COST * $ratio * 2, // цена ошибки пусть будет = 2 найденных ячейки
             'mistakes_max' => $mistakesMax,
             'players_max' => 0,
-            'game_begin' => $gameBegin,
+            'game_begin' => '0000-00-00 00:00:00',
             'game_end' => '0000-00-00 00:00:00',
+            'status' => Game::STATUS_FUTURE,
         ));
         $gameId = $this->Game->getLastInsertID();
         $this->Game->save(array(

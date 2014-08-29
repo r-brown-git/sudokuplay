@@ -1,5 +1,6 @@
 <?
 App::uses('UsersGroup', 'Model');
+App::uses('Game', 'Model');
 class GamesController extends AppController {
 
     public $uses = array(
@@ -20,6 +21,14 @@ class GamesController extends AppController {
             ),
             'bounty' => false
         ),
+        /*'games.current' => array(
+            'title' => 'Будущие',
+            'href' => array(
+                'controller' => 'games',
+                'action' => 'future',
+            ),
+            'bounty' => false
+        ),*/
         /*'games.archive' => [
             'title' => 'Архив',
             'href' => [
@@ -58,13 +67,9 @@ class GamesController extends AppController {
         ));
         $games = $this->Game->find('all', array(
             'conditions' => array(
-                'OR' => array(
-                    array('Game.game_begin >' => date(DATE_SQL)),
-                    'AND' => array(
-                        array('Game.game_begin <=' => date(DATE_SQL)),
-                        array('Game.game_end' => '0000-00-00 00:00:00'),
-                    ),
-                ),
+                array('Game.status' => Game::STATUS_CURRENT),
+                array('Game.game_begin <=' => date(DATE_SQL)),
+                array('Game.game_end' => '0000-00-00 00:00:00'),
             ),
             'order' => array('Game.game_begin ASC'),
         ));
@@ -86,15 +91,12 @@ class GamesController extends AppController {
         $game = $this->Game->find('first', array(
             'conditions' => array(
                 'Game.id' => $gameId,
-                'OR' => array(
-                    array('Game.game_begin >' => date(DATE_SQL)),
-                    'AND' => array(
-                        array('Game.game_begin <=' => date(DATE_SQL)),
-                        array('Game.game_end' => '0000-00-00 00:00:00'),
-                    ),
+                    array('Game.status' => Game::STATUS_CURRENT),
+                    array('Game.game_begin <=' => date(DATE_SQL)),
+                    array('Game.game_end' => '0000-00-00 00:00:00'),
                 )
             )
-        ));
+        );
         if (!$game) {
             throw new NotFoundException();
         }

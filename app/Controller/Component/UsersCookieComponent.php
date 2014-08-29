@@ -77,10 +77,7 @@ class UsersCookieComponent extends Component {
                         $result = $user['User'];
                         $this->controller->UsersSession->save(array(
                             'id' => $session['UsersSession']['id'],
-                            'ip' => env('REMOTE_ADDR'),
-                            'user_agent' => env('HTTP_USER_AGENT'),
                             'last_auth' => date(DATE_SQL),
-                            'last_connect' => date(DATE_SQL),
                         ));
                     }
                 } else {
