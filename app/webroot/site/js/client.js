@@ -4,16 +4,14 @@
 var client = {
 
     connect: function(host, auth, gameId) {
-        //if (navigator.userAgent.toLowerCase().indexOf('chrome') != -1) {
-        //    var socket = io.connect(host, {'transports': ['xhr-polling']});
-        //else
-            var socket = io.connect(host);
+
+        var socket = io.connect(host);
 
         socket.on('connect', function() {
             // при получении сообщения от сервера
             socket.on('message', function (msg) {
                 if (msg.response == 'error') {
-
+                    console.log(msg);
                 } else if (msg.response == 'messageAdded') {
                     client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
                 } else if (msg.response == 'cellFound') { // кто-то кроме меня нашел ячейку
