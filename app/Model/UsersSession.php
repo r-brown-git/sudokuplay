@@ -6,7 +6,7 @@
  */
 
 class UsersSession extends Model {
-    const ONLINE_DELAY = '-10 minutes';
+    const ONLINE_DELAY = '-5 minutes';
 
     public function getOnlineUsersCount() {
         return $this->find('count', array(
@@ -25,6 +25,7 @@ class UsersSession extends Model {
                 'UsersSession.active' => false,
             ),
             array(
+                'UsersSession.active' => true,
                 'UsersSession.last_connect <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
             )
         );

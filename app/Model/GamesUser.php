@@ -53,6 +53,7 @@ class GamesUser extends AppModel {
                 'GamesUser.active' => false,
             ),
             array(
+                'GamesUser.active' => true,
                 'GamesUser.last_connect <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
                 'GamesUser.last_found <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
             )

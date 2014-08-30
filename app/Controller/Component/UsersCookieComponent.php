@@ -83,6 +83,7 @@ class UsersCookieComponent extends Component {
             $this->controller->UsersSession->save(array(
                 'id' => $session['UsersSession']['id'],
                 'last_connect' => date(DATE_SQL),
+                'active' => true,
             ));
         }
     }
