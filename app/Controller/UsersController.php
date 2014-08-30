@@ -278,7 +278,9 @@ class UsersController extends AppController {
                     false,
                     array('id', 'login', 'password')
                 );
-                $this->Session->write('User.login', $this->request->data['User']['login']);
+                $user['User']['login'] = $this->request->data['User']['login'];
+                $user['User']['password'] = $this->request->data['User']['password'];
+                $this->Session->write('User', $user['User']);
                 $this->UsersProfile->save(
                     $this->request->data['UsersProfile'],
                     false,

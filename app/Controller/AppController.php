@@ -83,7 +83,7 @@ class AppController extends Controller {
         }
         $this->curUser = $authData;
 
-        if ($authData['id']) {
+        if ($this->curUser['id']) {
             $this->UsersSession->updateAll(
                 array(
                     'ip' => '"' . env('REMOTE_ADDR') . '"',
