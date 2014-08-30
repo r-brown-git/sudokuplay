@@ -218,7 +218,7 @@ class UsersController extends AppController {
 
     public function logout() {
         $this->Session->delete('User');
-        $this->UsersCookie->deleteUsid($this->curUser['id']);
+        $this->UsersCookie->deleteUsid();
         $this->redirect($this->Auth->logout());
     }
 

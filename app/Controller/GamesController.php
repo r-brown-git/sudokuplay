@@ -126,14 +126,14 @@ class GamesController extends AppController {
                 'banned' => false,
             ));
         } else {
+            if ($gameUser['GamesUser']['banned']) {
+                throw new ForbiddenException();
+            }
             $this->GamesUser->save(array(
                 'id' => $gameUser['GamesUser']['id'],
                 'last_connect' => date(DATE_SQL),
                 'active' => true,
             ));
-            if ($gameUser['GamesUser']['banned']) {
-                throw new ForbiddenException();
-            }
         }
 
         $this->set('points', $this->User->findById($this->curUser['id'])['User']['points']);

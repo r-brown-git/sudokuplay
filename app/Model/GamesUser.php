@@ -1,6 +1,7 @@
 <?php
 App::uses('AppModel', 'Model');
 class GamesUser extends AppModel {
+    const ONLINE_DELAY = '-5 minutes';
 
     /**
      * Возвращает юзеров онлайн для заданной игры
@@ -39,8 +40,23 @@ class GamesUser extends AppModel {
 
     public function getOnlinePayersCount() {
         return $this->find('count', array('conditions' => array(
-            'GamesUser.active' => 1,
+            'GamesUser.active' => true,
         )));
+    }
+
+    /**
+     * Отключает флаг онлайн для игроков, не проявлявших активность больше ONLINE_DELAY
+     */
+    public function disableInactivePlayers() {
+        $this->updateAll(
+            array(
+                'GamesUser.active' => false,
+            ),
+            array(
+                'GamesUser.last_connect <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
+                'GamesUser.last_found <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
+            )
+        );
     }
 
 }

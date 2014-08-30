@@ -6,13 +6,27 @@
  */
 
 class UsersSession extends Model {
-    const ONLINE_DELAY = '-5 minutes';
+    const ONLINE_DELAY = '-10 minutes';
 
     public function getOnlineUsersCount() {
-        return intval($this->find('count', array(
+        return $this->find('count', array(
             'conditions' => array(
-                'UsersSession.last_connect >=' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
+                'UsersSession.active' => true,
             ),
-        )));
+        ));
+    }
+
+    /**
+     * Отключает флаг онлайн для пользователей, не обновлявших страницу больше ONLINE_DELAY
+     */
+    public function disableInactiveUsers() {
+        $this->updateAll(
+            array(
+                'UsersSession.active' => false,
+            ),
+            array(
+                'UsersSession.last_connect <' => date(DATE_SQL, strtotime(self::ONLINE_DELAY)),
+            )
+        );
     }
 } 

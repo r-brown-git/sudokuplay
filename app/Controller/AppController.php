@@ -52,6 +52,7 @@ class AppController extends Controller {
         'ChatMessage',
         'UsersSession',
         'Game',
+        'GamesUser',
     );
 
     public $layout = 'sudokuplay';
@@ -84,21 +85,14 @@ class AppController extends Controller {
         $this->curUser = $authData;
 
         if ($this->curUser['id']) {
-            $this->UsersSession->updateAll(
-                array(
-                    'ip' => '"' . env('REMOTE_ADDR') . '"',
-                    'user_agent' => '"' . env('HTTP_USER_AGENT') . '"',
-                    'last_auth' => '"' . date(DATE_SQL) . '"',
-                    'last_connect' => '"' . date(DATE_SQL) . '"',
-                ),
-                array(
-                    'user_id' => $authData['id'],
-                )
-            );
+            $this->UsersCookie->updateCurrentSession($this->curUser['id']);
         }
 
         $this->set('usid', $this->curUser['id'] != 0 ? $this->Cookie->read('usid') : null); // для запросов к сокету node.js
         $this->set('last_chat_messages', $this->ChatMessage->getLastChatMessages());
+
+        $this->UsersSession->disableInactiveUsers();
+        $this->GamesUser->disableInactivePlayers();
 
         $countOnlineUsers = $this->UsersSession->getOnlineUsersCount();
         $this->set('count_online_users', $countOnlineUsers);
