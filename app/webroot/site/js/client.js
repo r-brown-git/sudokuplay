@@ -3,6 +3,12 @@
  */
 var client = {
 
+    errorReasons : {
+        'wrongField': 'Неверно указано поле. Хакер?',
+        'accessDeny': 'Вы забанены в этой игре :(',
+        'notAuthorized': 'Вы не авторизованы',
+    },
+
     connect: function(host, auth, gameId) {
 
         var socket = io.connect(host);
@@ -12,6 +18,9 @@ var client = {
             socket.on('message', function (msg) {
                 if (msg.response == 'error') {
                     console.log(msg);
+                    if (typeof(client.errorReasons[msg.reason]) !== 'undefined') {
+                        sudokuplay.addToMarquee(client.errorReasons[msg.reason]);
+                    }
                 } else if (msg.response == 'messageAdded') {
                     client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
                 } else if (msg.response == 'cellFound') { // кто-то кроме меня нашел ячейку
@@ -96,7 +105,6 @@ var client = {
     cellCheckedHandler: function(guess, cell, value, reward) {
         $('#c' + cell).removeClass('selected');
         sudokuplay.selected = -1;
-        client.showReward('Вы', reward);
         if (guess == 'wrong') {
             $('#c' + cell).addClass('wrong');
             setTimeout(function() {
@@ -107,8 +115,12 @@ var client = {
         if (guess == 'right' || guess == 'alreadyFound') {
             $('#c' + cell).removeClass('empty').addClass('found');
             $('#c' + cell).text(value);
+            if (guess == 'alreadyFound') {
+                sudokuplay.addToMarquee('Кто-то уже нашел эту ячейку');
+            }
         }
         if (guess == 'wrong' || guess == 'right') {
+            client.showReward('Вы', reward);
             sudokuplay.myPoints += Math.round(reward);
             $('#my-points').text(sudokuplay.myPoints);
             var i, n = onlineUsers.length,

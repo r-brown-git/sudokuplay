@@ -9,14 +9,14 @@ class UsersSession extends Model {
     const ONLINE_DELAY = '-5 minutes';
 
     public function getOnlineUsersCount() {
-        return $this->find('count', array(
+        return intval($this->find('count', array(
             'conditions' => array(
                 'UsersSession.active' => true,
             ),
             'group' => array(
                 'UsersSession.user_id',
             ),
-        ));
+        )));
     }
 
     /**
