@@ -71,6 +71,7 @@ class GameParserTask extends Shell {
             'mistake_cost' => self::DEFAULT_COST * $ratio * 2, // цена ошибки пусть будет = 2 найденных ячейки
             'mistakes_max' => $mistakesMax,
             'players_max' => 0,
+            'created' => date(DATE_SQL),
             'game_begin' => '0000-00-00 00:00:00',
             'game_end' => '0000-00-00 00:00:00',
             'status' => Game::STATUS_FUTURE,

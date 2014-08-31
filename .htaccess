@@ -2,6 +2,10 @@
    RewriteEngine on
    RewriteRule    ^$ app/webroot/    [L]
    RewriteRule    (.*) app/webroot/$1 [L]
+
+   RewriteCond %{HTTP_HOST} ^sudokuplay.ru$ [NC]
+   RewriteRule ^(.*)$ http://www.sudokuplay.ru/$1 [R=301,L]
+
 </IfModule>
 
 AuthType Basic

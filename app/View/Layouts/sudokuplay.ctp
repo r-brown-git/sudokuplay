@@ -15,7 +15,7 @@
 <?=$this->Html->script('/site/js/main').PHP_EOL;?>
 <?=$this->Html->script('/site/js/client').PHP_EOL;?>
 
-<? $nodeJsHost = 'http://' . $_SERVER['HTTP_HOST'] . ':8080'; ?>
+<? $nodeJsHost = Configure::read('nodeJsHost'); ?>
 <script src="<?=$nodeJsHost?>/socket.io/socket.io.js"></script>
 <script type="text/javascript">
     var host = '<?=$nodeJsHost?>';
