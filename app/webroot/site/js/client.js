@@ -11,9 +11,21 @@ var client = {
 
     connect: function(host, auth, gameId) {
 
+        // добавляем к каждому сообщению данные аутентификации
+        var sendMessage = function(request, data) {
+            data.request = request;
+            data.auth = {
+                'id': auth.id,
+                'key': auth.key,
+            }
+            var string = JSON.stringify(data);
+            socket.send(string);
+        };
+
         var socket = io.connect(host);
 
         socket.on('connect', function() {
+
             // при получении сообщения от сервера
             socket.on('message', function (msg) {
                 if (msg.response == 'error') {
@@ -81,17 +93,6 @@ var client = {
                 });
             }
         });
-
-        // добавляем к каждому сообщению данные аутентификации
-        var sendMessage = function(request, data) {
-            data.request = request;
-            data.auth = {
-                'id': auth.id,
-                'key': auth.key,
-            }
-            var string = JSON.stringify(data);
-            socket.send(string);
-        };
     },
 
     showReward: function(nickname, reward) {

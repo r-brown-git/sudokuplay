@@ -15,21 +15,7 @@
 <?=$this->Html->script('/site/js/main').PHP_EOL;?>
 <?=$this->Html->script('/site/js/client').PHP_EOL;?>
 
-<? $nodeJsHost = Configure::read('nodeJsHost'); ?>
-<script src="<?=$nodeJsHost?>/socket.io/socket.io.js"></script>
-<script type="text/javascript">
-    var host = '<?=$nodeJsHost?>';
-    var auth = {
-        'id': <?=$cur_user['id']?>,
-        'key': '<?=$usid ? md5($usid) : ''?>',
-        'login': '<?=htmlspecialchars($cur_user['login'])?>',
-    };
-    var gameId = <?=isset($game) ? $game['Game']['id'] : '0'?>;
-    window.onload = client.connect(host, auth, gameId);
-    $(function () {
-        sudokuplay.index();
-    });
-</script>
+<?=$this->element('nodejs_connect');?>
 </head>
 <body>
 <div class="body-wrapper">
@@ -127,5 +113,10 @@
     </div>
 </div>
 
+<script type="text/javascript">
+    $(function() {
+        sudokuplay.index();
+    });
+</script>
 </body>
 </html>
