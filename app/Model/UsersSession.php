@@ -13,6 +13,9 @@ class UsersSession extends Model {
             'conditions' => array(
                 'UsersSession.active' => true,
             ),
+            'group' => array(
+                'UsersSession.user_id',
+            ),
         ));
     }
 

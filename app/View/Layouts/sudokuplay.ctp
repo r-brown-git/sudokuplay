@@ -5,15 +5,15 @@
 </title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="keywords" content="судоку, sudoku, игра, играть, турнир, онлайн, online, мультиплеер, multiplayer, одновременно, рейтинг, статистика, головоломки, генератор, алгоритм">
-<meta name="description" content="Решайте судоку одновременно с другими игроками на одном поле !">
+<meta name="description" content="Решайте судоку одновременно с другими игроками на одном поле!">
 
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" type="text/css" href="/site/css/template.css">
 <link rel="stylesheet" type="text/css" href="/site/css/extend.css">
-<?=$this->Html->script('/js/jquery-1.10.1.min')?>
-<?=$this->Html->script('/js/sprintf')?>
-<?=$this->Html->script('/site/js/main')?>
-<?=$this->Html->script('/site/js/client')?>
+<?=$this->Html->script('/js/jquery-1.10.1.min').PHP_EOL;?>
+<?=$this->Html->script('/js/sprintf').PHP_EOL;?>
+<?=$this->Html->script('/site/js/main').PHP_EOL;?>
+<?=$this->Html->script('/site/js/client').PHP_EOL;?>
 
 <? $nodeJsHost = 'http://' . $_SERVER['HTTP_HOST'] . ':8080'; ?>
 <script src="<?=$nodeJsHost?>/socket.io/socket.io.js"></script>

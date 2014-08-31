@@ -29,7 +29,9 @@ class UsersCookieComponent extends Component {
         }
     }
 
-    // при логауте юзера убиваем сессию на текущем устройстве
+    /**
+     *  При логауте юзера убиваем сессию на текущем устройстве
+     */
     public function deleteUsid() {
         if ($session = $this->_getCurrentSession()) {
             $this->controller->UsersSession->delete($session['UsersSession']['id']);
@@ -37,6 +39,10 @@ class UsersCookieComponent extends Component {
         $this->controller->Cookie->delete('usid');
     }
 
+    /**
+     * Создание сессии и связанной с ней куки
+     * @param $userId
+     */
     public function createUsid($userId) {
         $hash = Security::hash(uniqid(), 'sha1', false);
 
@@ -56,6 +62,10 @@ class UsersCookieComponent extends Component {
         $this->controller->Cookie->write('usid', $hash, false, self::USID_LIFETIME);
     }
 
+    /**
+     * Авторизация по куке
+     * @return null
+     */
     public function cookieAuth() {
         $result = null;
         $session = $this->_getCurrentSession();
@@ -78,6 +88,9 @@ class UsersCookieComponent extends Component {
         return $result;
     }
 
+    /**
+     * Обновляем активность текущей сессии
+     */
     public function updateCurrentSession() {
         if ($session = $this->_getCurrentSession()) {
             $this->controller->UsersSession->save(array(
@@ -88,6 +101,10 @@ class UsersCookieComponent extends Component {
         }
     }
 
+    /**
+     * Получает текущую сессию по куке
+     * @return array
+     */
     private function _getCurrentSession() {
         $session = [];
         $hash = $this->controller->Cookie->read('usid');
