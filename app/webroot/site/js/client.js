@@ -3,20 +3,22 @@
  */
 var client = {
 
+    mySocketId: '',
+
     errorReasons : {
         'wrongField': 'Неверно указано поле. Хакер?',
-        'accessDeny': 'Вы забанены в этой игре :(',
-        'notAuthorized': 'Вы не авторизованы',
+        'gameDenied': 'Доступ к этой игре запрещен',
+        'wrongAuth': 'Ошибка данных аутентификации',
+        'wrongParams': 'Неверные параметры запроса',
     },
 
-    connect: function(host, auth, gameId) {
+    connect: function(host, auth, params) {
 
-        // добавляем к каждому сообщению данные аутентификации
-        var sendMessage = function(request, data) {
-            data.request = request;
-            data.auth = {
-                'id': auth.id,
-                'key': auth.key,
+        // обязательный параметр method
+        var sendMessage = function(method, data) {
+            data.method = method;
+            if (client.mySocketId) {
+                data.clientSocketId = client.mySocketId;
             }
             var string = JSON.stringify(data);
             socket.send(string);
@@ -26,12 +28,20 @@ var client = {
 
         socket.on('connect', function() {
 
+            // при подключении отправляем данные аутентификации
+            if (auth.id && auth.key) {
+                sendMessage('auth', {
+                    'id': auth.id,
+                    'key': auth.key,
+                    'gameId': params.gameId ? params.gameId : 0,
+                });
+            }
+
             // при получении сообщения от сервера
             socket.on('message', function (msg) {
-                if (msg.response == 'error') {
-                    console.log(msg);
-                    if (typeof(client.errorReasons[msg.reason]) !== 'undefined') {
-                        sudokuplay.addToMarquee(client.errorReasons[msg.reason]);
+                if (msg.response == 'auth') {
+                    if (msg.authorized == 'true') {
+                        client.mySocketId = msg.socketId;
                     }
                 } else if (msg.response == 'messageAdded') {
                     client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
@@ -51,10 +61,17 @@ var client = {
                     if (msg.ban) {
                         client.gameBanHandler(null);
                     }
-                } else if (msg.response == 'playerEntered' && gameId == msg.gameId) { // только для тех, кто в этой игре
+                } else if (msg.response == 'messageAdded') {
+                    client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
+                } else if (msg.response == 'playerEntered' && params.gameId == msg.gameId) { // только для тех, кто в этой игре
                     client.playerEnteredHandler(msg.userId, msg.login, msg.gamePoints);
-                } else if (msg.response == 'playerLeave' && gameId == msg.gameId) {
+                } else if (msg.response == 'playerLeave' && params.gameId == msg.gameId) {
                     client.playerLeavedHandler(msg.userId);
+                } else if (msg.response == 'error') {
+                    console.log(msg);
+                    if (typeof(client.errorReasons[msg.reason]) !== 'undefined') {
+                        sudokuplay.addToMarquee(client.errorReasons[msg.reason]);
+                    }
                 }
             });
 
@@ -63,7 +80,7 @@ var client = {
                 if (e.which == '13') {
                     var text = $('#message-input').val().trim();
                     if (text) {
-                        sendMessage('newMessage', {
+                        sendMessage('writeChat', {
                             'text':text
                         });
                         $('#message-input').val('');
@@ -71,21 +88,15 @@ var client = {
                 }
             });
 
-            if (gameId) {
-                // При подключении к сокету на странице игры, оповещаем сервер, что зашли в эту игру
-                sendMessage('enteredTheGame', {
-                    'gameId':gameId
-                });
-
+            if (params.gameId) {
                 // При нажатии кнопки значения отправляем запрос
                 $('.buttons input').click(function() {
                     var cell = sudokuplay.selected;
                     var value = $(this).val();
                     if (cell != -1) {
                         sendMessage('checkCell', {
-                            'gameId':gameId,
-                            'cell':cell,
-                            'value':value
+                            'cell': cell,
+                            'value': value
                         });
                     } else {
                         alert("Выберите ячейку !");

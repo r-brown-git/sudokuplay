@@ -13,6 +13,7 @@ $nodeJsHost = Configure::read('nodeJsHost');
         'id': <?=$cur_user['id']?>,
         'key': '<?=$usid ? md5($usid) : ''?>',
     };
-    var gameId = <?=isset($game) ? $game['Game']['id'] : '0'?>;
-    window.onload = client.connect(host, auth, gameId);
+    var params = {};
+    params.gameId = <?=isset($game) ? $game['Game']['id'] : '0'?>;
+    window.onload = client.connect(host, auth, params);
 </script>
