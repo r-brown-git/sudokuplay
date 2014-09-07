@@ -66,19 +66,24 @@ class UsersController extends AppController {
                 'GamesUser',
             ),
         ), false);
-        $this->Paginator->settings['fields'] = array(
-            'User.*',
-            'UsersProfile.*',
-            'UsersSession.*',
-            'COUNT(GamesUser.game_id) as gamesCount',
-            'IF(User.registered, DATEDIFF(NOW(), User.registered), 0) AS daysCount',
+        $this->Paginator->settings = array(
+            'fields' => array(
+                'User.*',
+                'UsersProfile.*',
+                'UsersSession.*',
+                '(SELECT COUNT(*) FROM sud_games_users WHERE user_id = User.id) as gamesCount',
+                'IF(User.registered, DATEDIFF(NOW(), User.registered), 0) AS daysCount',
+            ),
+            'limit' => 15,
+            'order' => array(
+                'User.points' => 'DESC',
+                'User.registered' => 'DESC',
+            ),
+            'group' => array(
+                'User.id'
+            ),
         );
-        $this->Paginator->settings['limit'] = 15;
-        $this->Paginator->settings['order'] = array(
-            'User.points' => 'DESC',
-            'User.registered' => 'DESC',
-        );
-        $this->Paginator->settings['group'] = array('User.id');
+
         $conditions = array();
         if ($param == 'online') {
             $conditions['UsersSession.last_connect >='] = date(DATE_SQL, strtotime(UsersSession::ONLINE_DELAY));
