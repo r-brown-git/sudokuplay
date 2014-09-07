@@ -19,11 +19,14 @@
                     'format' => array('before', 'label', 'input', 'after', 'error'),
                 ),
             ));?>
-            <?=$this->Form->input('User.login', array(
-                'type' => 'text',
-                'label' => 'Логин',
-                'class' => 'textbox',
-            ));?>
+            <div class="input text">
+                <label for="UserLogin">Логин</label>
+                <div class="label" id="UserLogin">
+                    <strong><?=htmlspecialchars($cur_user['login'])?></strong>
+                    <a href="<?=$this->Html->url('/users/set_login')?>">(изменить)</a>
+                </div>
+                <div class="clear"></div>
+            </div>
             <?=$this->Form->input('UsersProfile.email', array(
                 'type' => 'email',
                 'label' => 'E-mail',
@@ -43,8 +46,14 @@
             <div class="input select">
                 <?=$this->Form->label('UsersProfile.sex', 'Пол');?>
                 <?=$this->Form->select('UsersProfile.sex',
-                    array('M' => 'Муж', 'F' => 'Жен',),
-                    array('empty' => 'не указан')
+                    array(
+                        UsersProfile::SEX_MALE => 'Муж',
+                        UsersProfile::SEX_FEMALE => 'Жен',
+                    ),
+                    array(
+                        'default' => '',
+                        'empty' => 'не указан',
+                    )
                 );?>
                 <div class="clear"></div>
             </div>

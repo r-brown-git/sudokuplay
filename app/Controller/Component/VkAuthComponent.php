@@ -69,7 +69,7 @@ class VkAuthComponent extends Component {
                     'first_name' => $userInfo['response'][0]['first_name'],
                     'last_name' => $userInfo['response'][0]['last_name'],
                     'nickname' => $userInfo['response'][0]['nickname'],
-                    'sex' => $userInfo['response'][0]['sex'] == 2 ? 'M' : ($userInfo['response'][0]['sex'] == 1 ? 'F' : null),
+                    'sex' => $userInfo['response'][0]['sex'] == 2 ? UsersProfile::SEX_MALE : ($userInfo['response'][0]['sex'] == 1 ? UsersProfile::SEX_FEMALE : 0),
                     'birthday' => $birthday,
                 );
             }

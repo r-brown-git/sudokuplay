@@ -1,9 +1,9 @@
 <?php
 class Game extends AppModel {
 
-    const STATUS_PAST = 'archive';
-    const STATUS_CURRENT = 'current';
-    const STATUS_FUTURE = 'future';
+    const STATUS_ARCHIVE = 1;
+    const STATUS_CURRENT = 2;
+    const STATUS_FUTURE = 3;
 
     public function getCurrentGamesCount() {
         return $this->find('count', array(

@@ -89,17 +89,28 @@ var client = {
             });
 
             if (params.gameId) {
+
                 // При нажатии кнопки значения отправляем запрос
                 $('.buttons input').click(function() {
                     var cell = sudokuplay.selected;
-                    var value = $(this).val();
                     if (cell != -1) {
                         sendMessage('checkCell', {
                             'cell': cell,
-                            'value': value
+                            'value': $(this).val(),
                         });
                     } else {
                         alert("Выберите ячейку !");
+                    }
+                });
+
+                // При нажатии цифры на клавиатуре тоже отправляем запрос
+                $(document).keydown(function(e) {
+                    var cell = sudokuplay.selected;
+                    if (cell != -1 && e.which >= 48 && e.which <= 57) {
+                        sendMessage('checkCell', {
+                            'cell': cell,
+                            'value': String.fromCharCode(e.which),
+                        });
                     }
                 });
             }
@@ -237,7 +248,7 @@ var client = {
             <div class="chat-time" title="' + datetime[0].replace(/-/g, '.') + ' ' + datetime[1] + '">' + datetime[1] + '</div>\
             <div class="chat-profile">\
                 <img class="chat-profile-icon" src="/site/images/chat_profile_icon.png">\
-                <a class="chat-profile-link" href="/users/show/' + userid + '"><b>' + stripTags(userlogin) + '</b></a>\
+                <a class="chat-profile-link" data-login="' + stripTags(userlogin) + '"><b>' + stripTags(userlogin) + '</b></a>\
             </div>\
             <div class="chat-message">' + stripTags(message) + '</div>\
         </div>';

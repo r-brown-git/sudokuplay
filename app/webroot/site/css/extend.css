@@ -256,6 +256,11 @@ h3 {
     border-color: #a03000;
     border-width: 1px;
 }
+#profile-edit-form .label {
+    float: right;
+    padding-top: 3px;
+    width: 145px;
+}
 #profile-edit-form .error-message {
     color: #a03000;
     margin: 2px 0 0 178px;

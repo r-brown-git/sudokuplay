@@ -1,4 +1,6 @@
 <?php
+App::uses('UsersProfile', 'Model');
+
 class OkAuthComponent extends Component {
     const CLIENT_ID = '1090950656';
     const CLIENT_SECRET = '01AD4608E1BAEA22D5D852AF';
@@ -74,7 +76,7 @@ class OkAuthComponent extends Component {
                     'first_name' => $userInfo['first_name'],
                     'last_name' => $userInfo['last_name'],
                     'nickname' => '',
-                    'sex' => $userInfo['gender'] == 'male' ? 'M' : ($userInfo['gender'] == 'female' ? 'F' : null),
+                    'sex' => $userInfo['gender'] == 'male' ? UsersProfile::SEX_MALE : ($userInfo['gender'] == 'female' ? UsersProfile::SEX_FEMALE : 0),
                     'birthday' => $userInfo['birthday'],
                 );
             }

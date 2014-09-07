@@ -1,5 +1,6 @@
 <?php
 App::uses('AppModel', 'Model');
+
 class UsersGroup extends AppModel {
     const GUEST = 0;
     const REGISTERED = 1;

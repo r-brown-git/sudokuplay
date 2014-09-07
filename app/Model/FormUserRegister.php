@@ -11,8 +11,8 @@ class FormUserRegister extends AppModel {
                 'message' => 'Этот логин занят',
             ),
             'between' => array(
-                'rule'    => array('between', 4, 15),
-                'message' => 'Логин должен быть от 4 до 15 символов',
+                'rule'    => array('between', 3, 15),
+                'message' => 'Логин должен быть от 3 до 15 символов',
             ),
             'alphaNumeric' => array(
                 'rule' => 'alphaNumeric',

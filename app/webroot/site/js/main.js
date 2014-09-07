@@ -4,6 +4,13 @@
 var sudokuplay = {
     index: function() {
         $('#message-input').trigger('focus');
+
+        $('#chat').on('click', '.chat-profile-link', function(e) {
+            $('#message-input')
+                .val( $(this).attr('data-login') + ', ' + $('#message-input').val() )
+                .trigger('focus');
+            return false;
+        });
     },
 
     usersEdit: function() {

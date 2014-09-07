@@ -2,6 +2,7 @@
 App::uses('User', 'Model');
 App::uses('UsersGroup', 'Model');
 App::uses('UsersSession', 'Model');
+App::uses('UsersExternal', 'Model');
 App::uses('String', 'Utility');
 
 class UsersController extends AppController {
@@ -23,9 +24,9 @@ class UsersController extends AppController {
     );
 
     private $_authServices = array(
-        'vk',
-        'google',
-        'ok',
+        UsersExternal::VKONTAKTE,
+        UsersExternal::ODNOKLASSNIKI,
+        UsersExternal::GOOGLE,
     );
 
     public $pageTitle = array('/users' => 'Участники');
@@ -96,8 +97,16 @@ class UsersController extends AppController {
     public function oauth($service = '') {
         if (in_array($service, $this->_authServices)) {
             $this->Session->write('Auth', $service);
-            $link = $this->{ucfirst($service) . 'Auth'}->getLink(); // получаем URL для сервиса
-        } else {
+
+            $link = false; // получаем URL для сервиса
+            if ($service == UsersExternal::VKONTAKTE) {
+                $link = $this->VkAuth->getLink();
+            } else if ($service == UsersExternal::ODNOKLASSNIKI) {
+                $link = $this->OkAuth->getLink();
+            }
+        }
+
+        if (!$link) {
             $link = array('controller' => 'users', 'action' => 'login');
         }
         $this->redirect($link);
@@ -142,8 +151,15 @@ class UsersController extends AppController {
         $result = false;
         $service = $this->Session->read('Auth');
         $code = !empty($this->request->query['code']) ? $this->request->query['code'] : false; // TODO: всегда ли code ?
-        if ($service && $code) {
-            $userInfo = $this->{ucfirst($service) . 'Auth'}->getUserInfo($code);
+
+        if (in_array($service, $this->_authServices) && $code) {
+            $userInfo = false;
+            if ($service == UsersExternal::VKONTAKTE) {
+                $userInfo = $this->VkAuth->getUserInfo($code);
+            } else if ($service == UsersExternal::ODNOKLASSNIKI) {
+                $userInfo = $this->OkAuth->getUserInfo($code);
+            }
+
             if ($userInfo) {
                 $external = $this->UsersExternal->find('first', array('conditions' => array(
                     'UsersExternal.service' => $service,
@@ -266,6 +282,9 @@ class UsersController extends AppController {
             if (empty($this->request->data['User']['password'])) {
                 $this->request->data['User']['password'] = $user['User']['password'];
             }
+            if (empty($this->request->data['UsersProfile']['sex'])) {
+                $this->request->data['UsersProfile']['sex'] = '0';
+            }
             $this->FormProfileEdit->set(array_merge(
                 $this->request->data['User'],
                 $this->request->data['UsersProfile']
@@ -276,9 +295,8 @@ class UsersController extends AppController {
                 $this->User->save(
                     $this->request->data['User'],
                     false,
-                    array('id', 'login', 'password')
+                    array('id', 'password')
                 );
-                $user['User']['login'] = $this->request->data['User']['login'];
                 $user['User']['password'] = $this->request->data['User']['password'];
                 $this->Session->write('User', $user['User']);
                 $this->UsersProfile->save(
@@ -293,8 +311,8 @@ class UsersController extends AppController {
             }
         } else {
             $this->request->data = $user;
-            $this->request->data['User']['password'] = '';
         }
+        $this->request->data['User']['password'] = '';
     }
 
     public function set_login() {
