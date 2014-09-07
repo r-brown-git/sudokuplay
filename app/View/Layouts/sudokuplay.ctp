@@ -15,14 +15,12 @@
 <?=$this->Html->script('/site/js/main').PHP_EOL;?>
 <?=$this->Html->script('/site/js/client').PHP_EOL;?>
 
-<?=$this->element('nodejs_connect');?>
+<? if ($cur_user['id']) {
+    echo $this->element('nodejs_connect');
+} ?>
 </head>
 <body>
 <div class="body-wrapper">
-
-<!--<div style="position:relative;float:left;">
-    <img src="/site/beta_test.png" />
-</div>-->
 
 <div id="custom-header"></div>
 <div id="header">
