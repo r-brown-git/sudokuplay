@@ -38,7 +38,7 @@ class GamesUser extends AppModel {
         return $result;
     }
 
-    public function getOnlinePayersCount() {
+    public function getOnlinePlayersCount() {
         return $this->find('count', array('conditions' => array(
             'GamesUser.active' => true,
         )));

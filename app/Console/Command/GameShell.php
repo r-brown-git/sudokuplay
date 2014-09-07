@@ -24,7 +24,10 @@ class GameShell extends AppShell {
     public function add() {
         $this->GameParser->execute(); // добавили в базу новую игру
 
-        if ($this->Game->getCurrentGamesCount() <= $this->GamesUser->getOnlinePayersCount() / 2) { // если игр в 2 раза меньше, чем игроков, добавляем
+        $gamesCount = $this->Game->getCurrentGamesCount();
+        $playersCount = $this->GamesUser->getOnlinePlayersCount();
+
+        if ($gamesCount < 2 || $gamesCount <= $playersCount / 2) { // если 0 или 1 игра ИЛИ игр в 2 раза меньше, чем игроков, добавляем
             $closestGame = $this->Game->find('first', array(
                 'conditions' => array(
                     'Game.status' => Game::STATUS_FUTURE,
