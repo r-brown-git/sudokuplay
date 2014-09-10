@@ -84,6 +84,7 @@ class AppController extends Controller {
         }
         $this->curUser = $authData;
 
+        // обновлять приходится и тут, и в ноде
         if ($this->curUser['id']) {
             $this->UsersCookie->updateCurrentSession($this->curUser['id']);
         }

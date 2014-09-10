@@ -45,7 +45,7 @@ var client = {
                     }
                 } else if (msg.response == 'messageAdded') {
                     client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
-                } else if (msg.response == 'cellFound') { // кто-то кроме меня нашел ячейку
+                } else if (msg.response == 'cellFound' && params.gameId == msg.gameId) { // кто-то кроме меня нашел ячейку
                     client.cellFoundHandler(msg.guess, msg.cell, msg.value, msg.userId, msg.login, msg.reward);
                     if (msg.finish) {
                         client.gameFinishHandler(msg.login);
@@ -61,8 +61,6 @@ var client = {
                     if (msg.ban) {
                         client.gameBanHandler(null);
                     }
-                } else if (msg.response == 'messageAdded') {
-                    client.writeChat(msg.datetime, msg.userId, msg.login, msg.text);
                 } else if (msg.response == 'playerEntered' && params.gameId == msg.gameId) { // только для тех, кто в этой игре
                     client.playerEnteredHandler(msg.userId, msg.login, msg.gamePoints);
                 } else if (msg.response == 'playerLeave' && params.gameId == msg.gameId) {
