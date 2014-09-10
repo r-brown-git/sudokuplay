@@ -1,4 +1,5 @@
 <?php
+die('test');
 /**
  * Web Access Frontend for TestSuite
  *
