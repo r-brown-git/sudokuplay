@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Судоку одновременная игра онлайн<? if ($page_title) { echo ' ' . implode(' - ', $page_title); } ?>
+<title>Судоку - одновременные игры онлайн<? if ($page_title) { echo ' | ' . implode(' - ', $page_title); } ?>
 </title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="keywords" content="судоку, sudoku, игра, играть, игроки, решать, онлайн, быстрее, одновременно, генерировать, алгоритм, партия, бонусы">

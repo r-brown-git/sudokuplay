@@ -336,6 +336,9 @@ input[type="button"], input[type="submit"], .button, a.button:link, a.button:vis
 .chat-profile-link {
     text-decoration: underline;
 }
+.chat-profile-b {
+    font-weight: bold;
+}
 .chat-message {
     font-size: 9pt;
     text-align: left;
