@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SUDOKUPLAY.RU<? if ($page_title) { echo ' ' . implode(' - ', $page_title); } ?>
+<title>Судоку одновременная игра онлайн<? if ($page_title) { echo ' ' . implode(' - ', $page_title); } ?>
 </title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="keywords" content="судоку, sudoku, игра, играть, решать, онлайн, быстрее, одновременно, генерировать, алгоритм, партия, бонусы">
-<meta name="description" content="Решайте судоку одновременно с другими участниками и находите ячейки быстрее соперников">
+<meta name="keywords" content="судоку, sudoku, игра, играть, игроки, решать, онлайн, быстрее, одновременно, генерировать, алгоритм, партия, бонусы">
+<meta name="description" content="Решайте судоку одновременно с другими участниками онлайн и находите ячейки быстрее соперников">
 
 <meta name="robots" content="index,follow">
 <link rel="stylesheet" type="text/css" href="/site/css/template.css">
