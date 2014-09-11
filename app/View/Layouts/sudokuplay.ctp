@@ -78,6 +78,7 @@
 <div id="content">
     <div id="mainbar">
         <div class="subheader">
+            <? if ($page_title) { ?>
             <h1><?
             $last = array_pop($page_title);
             foreach ($page_title as $url => $title) {
@@ -86,6 +87,7 @@
             echo '<span class="last">'. $last. '</span>';
             ?>
             </h1>
+            <? } ?>
 
             <?=$this->element('tabs')?>
         </div>
