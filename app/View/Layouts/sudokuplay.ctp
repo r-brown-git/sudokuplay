@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Судоку онлайн мультиплеер - <? if ($page_title) { echo ' | ' . implode(' - ', $page_title); } ?>
+<title>Судоку онлайн мультиплеер<? if ($page_title) { echo ' | ' . implode(' - ', $page_title); } ?>
 </title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <meta name="keywords" content="судоку, sudoku, игра, играть, игроки, решать, онлайн, быстрее, одновременно, генерировать, алгоритм, партия, бонусы">
@@ -108,9 +108,7 @@
 
 </div>
 <div id="footer">
-    <div class="cake-powered">
-        <a href="http://www.cakephp.org/" rel="external" target="_blank" title="Powered by CakePHP Framework"><img src="/img/cake.power.gif" alt="Powered by CakePHP Framework" /></a>
-    </div>
+    <?=$this->element('foot_banners')?>
 </div>
 
 <script type="text/javascript">
