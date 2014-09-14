@@ -1,3 +1,4 @@
+<noindex>
 <table align="center" cellpadding="5" cellspacing="5" border="0"><tr><td align="center" valign="middle" width="100">
     <!-- begin of Top100 code -->
     <script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?3050034"></script>
@@ -38,3 +39,4 @@
     <a href="http://www.cakephp.org/" rel="external" target="_blank" title="Powered by CakePHP Framework"><img src="/img/cake.power.gif" alt="Powered by CakePHP Framework" /></a>
     <!-- /CakePHP //-->
 </td></tr></table>
+</noindex>
