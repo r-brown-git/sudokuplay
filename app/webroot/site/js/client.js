@@ -183,7 +183,7 @@ var client = {
 
     cellFoundHandler: function(guess, cell, value, userId, login, reward) {
         if (guess == 'right') {
-            $('#c' + cell).removeClass('selected');
+            $('#c' + sudokuplay.selected).removeClass('selected');
             sudokuplay.selected = -1;
             client.showReward(login, reward);
             $('#c' + cell).removeClass('empty').addClass('found');
