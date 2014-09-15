@@ -1,5 +1,7 @@
 <noindex>
-<table align="center" cellpadding="5" cellspacing="5" border="0"><tr><?/*<td align="center" valign="middle" width="100">
+<table align="center" cellpadding="5" cellspacing="5" border="0"><tr>
+<?/*
+<td align="center" valign="middle" width="100">
     <!-- begin of Top100 code -->
     <script id="top100Counter" type="text/javascript" src="http://counter.rambler.ru/top100.jcn?3050034"></script>
     <noscript>
@@ -8,7 +10,7 @@
         </a>
     </noscript>
     <!-- end of Top100 code -->
-</td><td align="center" valign="middle" width="100">
+</td>*/?><td align="center" valign="middle" width="100">
     <!-- I.UA counter --><a href="http://www.i.ua/" target="_blank" onclick="this.href='http://i.ua/r.php?185338';" title="Rated by I.UA">
         <script type="text/javascript" language="javascript"><!--
             iS='<img src="http'+(window.location.protocol=='https:'?'s':'')+
@@ -22,7 +24,7 @@
             iS+='&r'+escape(iH);
             iD.write(iS+'" border="0" width="88" height="15" />');
             //--></script></a><!-- End of I.UA counter -->
-</td>*/?><td align="center" valign="middle" width="100">
+</td><td align="center" valign="middle" width="100">
     <!--LiveInternet counter--><script type="text/javascript"><!--
         document.write("<a href='//www.liveinternet.ru/click' "+
             "target=_blank><img src='//counter.yadro.ru/hit?t24.11;r"+
