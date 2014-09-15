@@ -86,7 +86,7 @@ class UsersController extends AppController {
 
         $conditions = array();
         if ($param == 'online') {
-            $conditions['UsersSession.last_connect >='] = date(DATE_SQL, strtotime(UsersSession::ONLINE_DELAY));
+            $conditions['UsersSession.active'] = true;
         }
         $users = $this->paginate('User', $conditions);
         $this->set('users', $users);
