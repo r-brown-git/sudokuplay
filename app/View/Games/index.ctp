@@ -1,13 +1,15 @@
 <? if ($games) {
     foreach ($games as $aGame) { ?>
 
-        <div>
+        <div id="game<?=$aGame['Game']['id']?>">
             <div id="game-mini-list">
                 <div class="game-summary narrow">
                     <div class="cp">
                         <div class="column-number col1">
                             <div class="mini-counts">
-                                <span title="участников в игре"><?=count($aGame['GamesUser'])?></span>
+                                <span title="участников в игре" class="players-count">
+                                    <?=count($aGame['GamesUser'])?>
+                                </span>
                             </div>
                             <div>&nbsp;</div>
                         </div>

@@ -65,6 +65,8 @@ var client = {
                     client.playerEnteredHandler(msg.userId, msg.login, msg.gamePoints);
                 } else if (msg.response == 'playerLeave' && params.gameId == msg.gameId) {
                     client.playerLeavedHandler(msg.userId);
+                } else if (msg.response == 'usersByGame') {
+                    client.updatePlayersCount(msg.games);
                 } else if (msg.response == 'error') {
                     console.log(msg);
                     if (typeof(client.errorReasons[msg.reason]) !== 'undefined') {
@@ -236,6 +238,19 @@ var client = {
         if (shift) {
             onlineUsers.pop(); // удаляем последний повторяющийся элемент
             sudokuplay.renderOnlineUsers(onlineUsers);
+        }
+    },
+
+    updatePlayersCount: function(games) {
+        $.each( $('.content > div[id^="game"]'), function(i, v) {
+            $(v).find('.players-count').html('0');
+        });
+
+        var span = '';
+        for (var i in games) {
+            if (span = $('#game' + i).find('.players-count')) {
+                span.html(games[i]);
+            }
         }
     },
 
