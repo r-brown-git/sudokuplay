@@ -22,7 +22,7 @@ class GameShell extends AppShell {
      * Запускать раз в 10 минут
      */
     public function add() {
-        $this->GameParser->execute(); // добавили в базу новую игру
+        //$this->GameParser->execute(); // добавили в базу новую игру
 
         $gamesCount = $this->Game->getCurrentGamesCount();
         $playersCount = $this->GamesUser->getOnlinePlayersCount();
